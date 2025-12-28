@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\EntryController;
 use App\Http\Controllers\Web\ResultController;
 use App\Http\Controllers\Web\RankRequestController;
 use App\Http\Controllers\Web\MembershipController;
+use App\Http\Controllers\Web\RankDefinitionController;
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminTournamentController;
@@ -43,6 +44,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rank-requests', [RankRequestController::class, 'create'])->name('rank_requests.create');
     Route::post('/rank-requests', [RankRequestController::class, 'store'])->name('rank_requests.store');
 
+    // ★ 段位定義（選択時に取得してプレビューに使う）
+    Route::get('/rank-definitions/{rank}', [RankDefinitionController::class, 'show'])->name('rank_definitions.show');
+
     // 会員：年間登録更新
     Route::get('/membership/renew', [MembershipController::class, 'create'])->name('membership.create');
     Route::post('/membership/renew', [MembershipController::class, 'store'])->name('membership.store');
@@ -52,12 +56,15 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
+    // 大会 CRUD
     Route::resource('tournaments', AdminTournamentController::class);
 
+    // 段位申請 管理
     Route::get('rank-requests', [AdminRankRequestController::class, 'index'])->name('rank_requests.index');
     Route::post('rank-requests/{rankRequest}/approve', [AdminRankRequestController::class, 'approve'])->name('rank_requests.approve');
     Route::post('rank-requests/{rankRequest}/reject', [AdminRankRequestController::class, 'reject'])->name('rank_requests.reject');
 
+    // 成績入力（大会ごと）
     Route::get('tournaments/{tournament}/results', [AdminResultController::class, 'edit'])->name('results.edit');
     Route::post('tournaments/{tournament}/results', [AdminResultController::class, 'update'])->name('results.update');
 });

@@ -17,7 +17,7 @@ class DashboardController extends Controller
 
         if ($user->is_admin) {
             $pendingRankRequestsCount = RankRequest::query()
-                ->where('status', 'pending')
+                ->pending()
                 ->count();
 
             $missingResultsCount = Entry::query()
