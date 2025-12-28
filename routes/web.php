@@ -44,7 +44,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rank-requests', [RankRequestController::class, 'create'])->name('rank_requests.create');
     Route::post('/rank-requests', [RankRequestController::class, 'store'])->name('rank_requests.store');
 
-    // ★ 段位定義（選択時に取得してプレビューに使う）
+    // ★会員：段位申請 履歴
+    Route::get('/rank-requests/history', [RankRequestController::class, 'history'])->name('rank_requests.history');
+
+    // 段位定義（選択時に取得してプレビューに使う）
     Route::get('/rank-definitions/{rank}', [RankDefinitionController::class, 'show'])->name('rank_definitions.show');
 
     // 会員：年間登録更新
@@ -59,7 +62,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // 大会 CRUD
     Route::resource('tournaments', AdminTournamentController::class);
 
-    // 段位申請 管理
+    // 段位申請 管理（履歴含む）
     Route::get('rank-requests', [AdminRankRequestController::class, 'index'])->name('rank_requests.index');
     Route::post('rank-requests/{rankRequest}/approve', [AdminRankRequestController::class, 'approve'])->name('rank_requests.approve');
     Route::post('rank-requests/{rankRequest}/reject', [AdminRankRequestController::class, 'reject'])->name('rank_requests.reject');

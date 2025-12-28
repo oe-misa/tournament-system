@@ -56,7 +56,7 @@ class RankRequestController extends Controller
 
         RankRequest::create([
             'user_id' => $user->id,
-            'status' => RankRequest::STATUS_PENDING, // ★数値で統一
+            'status' => RankRequest::STATUS_PENDING,
             'requested_at' => now(),
 
             // DB側必須の rank_id
@@ -70,5 +70,26 @@ class RankRequestController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('status', '段位申請を受け付けました（管理者の承認待ち）');
+    }
+
+    // ★会員：段位申請の履歴
+    public function history(Request $request)
+    {
+        $user = $request->user();
+
+        $rankRequests = RankRequest::query()
+            ->where('user_id', $user->id)
+            ->with([
+                'rank:id,level',
+                'requestedRank:id,level',
+                'approver:id,name',
+                'rejector:id,name',
+            ])
+            ->orderByDesc('id')
+            ->paginate(20);
+
+        return view('rank_requests.history', [
+            'rankRequests' => $rankRequests,
+        ]);
     }
 }

@@ -22,6 +22,7 @@
                                 <th class="text-left py-2">ステータス</th>
                                 <th class="text-left py-2">担当者</th>
                                 <th class="text-left py-2">日付(YYMMDD)</th>
+                                <th class="text-left py-2">コメント</th>
                                 <th class="text-left py-2">操作</th>
                             </tr>
                         </thead>
@@ -69,25 +70,38 @@
                                         {{ $r->displayDateYyMmDd() }}
                                     </td>
 
-                                    <td class="py-2 space-x-2">
+                                    <td class="py-2">
                                         @if ((int) $r->status === \App\Models\RankRequest::STATUS_PENDING)
-                                            <form class="inline" method="POST"
-                                                action="{{ route('admin.rank_requests.approve', $r) }}">
+                                            <form method="POST" class="space-y-2">
                                                 @csrf
-                                                <button class="px-3 py-1 rounded bg-green-600 text-white"
-                                                    onclick="return confirm('承認してユーザー段位を更新します。よろしいですか？')">
-                                                    承認
-                                                </button>
-                                            </form>
 
-                                            <form class="inline" method="POST"
-                                                action="{{ route('admin.rank_requests.reject', $r) }}">
-                                                @csrf
-                                                <button class="px-3 py-1 rounded bg-gray-700 text-white"
-                                                    onclick="return confirm('却下します。よろしいですか？')">
-                                                    却下
-                                                </button>
+                                                <textarea name="admin_comment" rows="2" class="w-72 border-gray-300 rounded" placeholder="（任意）コメント">{{ old('admin_comment', '') }}</textarea>
+
+                                                <div class="space-x-2">
+                                                    <button type="submit"
+                                                        formaction="{{ route('admin.rank_requests.approve', $r) }}"
+                                                        class="px-3 py-1 rounded bg-green-600 text-white"
+                                                        onclick="return confirm('承認してユーザー段位を更新します。よろしいですか？')">
+                                                        承認
+                                                    </button>
+
+                                                    <button type="submit"
+                                                        formaction="{{ route('admin.rank_requests.reject', $r) }}"
+                                                        class="px-3 py-1 rounded bg-gray-700 text-white"
+                                                        onclick="return confirm('却下します。よろしいですか？')">
+                                                        却下
+                                                    </button>
+                                                </div>
                                             </form>
+                                        @else
+                                            <div class="text-gray-700 whitespace-pre-wrap">
+                                                {{ $r->admin_comment ?: '-' }}</div>
+                                        @endif
+                                    </td>
+
+                                    <td class="py-2">
+                                        @if ((int) $r->status === \App\Models\RankRequest::STATUS_PENDING)
+                                            <span class="text-gray-500">操作は左で入力</span>
                                         @else
                                             <span class="text-gray-500">処理済み</span>
                                         @endif

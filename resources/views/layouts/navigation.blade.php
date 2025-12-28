@@ -1,15 +1,56 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
+            <div class="flex">
+                <!-- Logo -->
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    </a>
+                </div>
 
-            {{-- 左：ロゴ（ダッシュボードへ） --}}
-            <div class="flex items-center">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                </a>
+                <!-- Navigation Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    {{-- 共通 --}}
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        ダッシュボード
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('tournaments.index')" :active="request()->routeIs('tournaments.*')">
+                        大会
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('results.index')" :active="request()->routeIs('results.*')">
+                        成績
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('rank_requests.create')" :active="request()->routeIs('rank_requests.create')">
+                        段位申請
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('rank_requests.history')" :active="request()->routeIs('rank_requests.history')">
+                        段位申請履歴
+                    </x-nav-link>
+
+                    {{-- 管理者のみ --}}
+                    @if (auth()->user()?->is_admin)
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            管理者
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.tournaments.index')" :active="request()->routeIs('admin.tournaments.*')">
+                            大会管理
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.rank_requests.index')" :active="request()->routeIs('admin.rank_requests.*')">
+                            段位申請管理
+                        </x-nav-link>
+                    @endif
+                </div>
             </div>
 
-            {{-- 右：ユーザーDropdown（プロフィール・ログアウト） --}}
+            <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -33,8 +74,10 @@
                             プロフィール
                         </x-dropdown-link>
 
+                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
+
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
                                 ログアウト
@@ -44,7 +87,7 @@
                 </x-dropdown>
             </div>
 
-            {{-- モバイル：ハンバーガー --}}
+            <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
@@ -57,12 +100,49 @@
                     </svg>
                 </button>
             </div>
-
         </div>
     </div>
 
-    {{-- モバイルメニュー：プロフィール/ログアウトのみ --}}
+    <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                ダッシュボード
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('tournaments.index')" :active="request()->routeIs('tournaments.*')">
+                大会
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('results.index')" :active="request()->routeIs('results.*')">
+                成績
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('rank_requests.create')" :active="request()->routeIs('rank_requests.create')">
+                段位申請
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('rank_requests.history')" :active="request()->routeIs('rank_requests.history')">
+                段位申請履歴
+            </x-responsive-nav-link>
+
+            {{-- 管理者のみ --}}
+            @if (auth()->user()?->is_admin)
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    管理者
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.tournaments.index')" :active="request()->routeIs('admin.tournaments.*')">
+                    大会管理
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.rank_requests.index')" :active="request()->routeIs('admin.rank_requests.*')">
+                    段位申請管理
+                </x-responsive-nav-link>
+            @endif
+        </div>
+
+        <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>

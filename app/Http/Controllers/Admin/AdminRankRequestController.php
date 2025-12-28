@@ -20,8 +20,8 @@ class AdminRankRequestController extends Controller
                 'approver:id,name',
                 'rejector:id,name',
             ])
-            ->orderBy('status')     // 未処理→承認→却下
-            ->orderByDesc('id')     // 新しい順
+            ->orderBy('status')
+            ->orderByDesc('id')
             ->paginate(30);
 
         return view('admin.rank_requests.index', compact('rankRequests'));
@@ -33,10 +33,13 @@ class AdminRankRequestController extends Controller
             return back()->with('status', 'この申請はすでに処理済みです');
         }
 
-        DB::transaction(function () use ($request, $rankRequest) {
+        $data = $request->validate([
+            'admin_comment' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($request, $rankRequest, $data) {
             $user = $rankRequest->user()->lockForUpdate()->first();
 
-            // 申請段位を特定（requested_rank_id → rank_id → requested_level）
             $rank = null;
 
             if ($rankRequest->requested_rank_id) {
@@ -57,10 +60,14 @@ class AdminRankRequestController extends Controller
             $user->rank_id = $rank->id;
             $user->save();
 
-            // 申請を承認（履歴情報も保存）
+            // 申請承認＋履歴
             $rankRequest->status = RankRequest::STATUS_APPROVED;
             $rankRequest->approved_by = $request->user()->id;
             $rankRequest->approved_at = now();
+
+            // ★管理者コメント
+            $rankRequest->admin_comment = $data['admin_comment'] ?? null;
+
             $rankRequest->save();
         });
 
@@ -73,9 +80,17 @@ class AdminRankRequestController extends Controller
             return back()->with('status', 'この申請はすでに処理済みです');
         }
 
+        $data = $request->validate([
+            'admin_comment' => ['nullable', 'string', 'max:2000'],
+        ]);
+
         $rankRequest->status = RankRequest::STATUS_REJECTED;
         $rankRequest->rejected_by = $request->user()->id;
         $rankRequest->rejected_at = now();
+
+        // ★管理者コメント
+        $rankRequest->admin_comment = $data['admin_comment'] ?? null;
+
         $rankRequest->save();
 
         return back()->with('status', '却下しました');

@@ -19,7 +19,12 @@ class RankRequest extends Model
         'rank_id',
         'requested_rank_id',
         'requested_level',
+
+        // 会員の備考
         'note',
+
+        // ★管理者コメント
+        'admin_comment',
 
         'approved_by',
         'approved_at',
@@ -39,6 +44,16 @@ class RankRequest extends Model
         return $query->where('status', self::STATUS_PENDING);
     }
 
+    public function scopeApproved($query)
+    {
+        return $query->where('status', self::STATUS_APPROVED);
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', self::STATUS_REJECTED);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -54,7 +69,6 @@ class RankRequest extends Model
         return $this->belongsTo(Rank::class, 'requested_rank_id');
     }
 
-    // 担当者（承認/却下した管理者）
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
@@ -75,7 +89,6 @@ class RankRequest extends Model
         };
     }
 
-    // 履歴表示用：担当者名
     public function handledByName(): string
     {
         return match ($this->status) {
@@ -85,7 +98,6 @@ class RankRequest extends Model
         };
     }
 
-    // 履歴表示用：日付（優先順位：承認/却下日時 → 申請日時）
     public function displayDateYyMmDd(): string
     {
         $dt = $this->approved_at ?? $this->rejected_at ?? $this->requested_at ?? $this->created_at;
