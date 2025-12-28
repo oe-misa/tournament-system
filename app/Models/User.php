@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -43,6 +45,31 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'membership_expires_at' => 'date',
         ];
+    }
+    public function rank(): BelongsTo
+    {
+        return $this->belongsTo(Rank::class);
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(Entry::class);
+    }
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class);
+    }
+
+    public function rankRequests(): HasMany
+    {
+        return $this->hasMany(RankRequest::class);
     }
 }
