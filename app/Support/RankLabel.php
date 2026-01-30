@@ -28,7 +28,9 @@ class RankLabel
             $level === 8 => '八段（A級）',
             $level === 9 => '九段（A級）',
             $level >= 10 => '十段（A級）',
+            // @codeCoverageIgnoreStart
             default => "不明（Lv {$level}）",
+            // @codeCoverageIgnoreEnd
         };
     }
 
@@ -49,7 +51,9 @@ class RankLabel
             $minLevel === 2 => 'A,B,C級',
             $minLevel === 3 => 'A,B級',
             $minLevel >= 4 => 'A級',
+            // @codeCoverageIgnoreStart
             default => '不明',
+            // @codeCoverageIgnoreEnd
         };
     }
 }

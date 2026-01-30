@@ -16,7 +16,7 @@
 | password | varchar | NO |  | ハッシュ |
 | is_admin | tinyint(1) | NO |  | 管理者フラグ |
 | rank_id | bigint | YES | FK | 現在段位（ranks.id） |
-| membership_expires_at | datetime | YES |  | 年間登録期限 |
+| membership_expires_at | date | YES |  | 年間登録期限 |
 | created_at | datetime | YES |  | |
 | updated_at | datetime | YES |  | |
 
@@ -62,7 +62,7 @@
 | id | bigint | NO | PK | エントリーID |
 | tournament_id | bigint | NO | FK | 大会ID |
 | user_id | bigint | NO | FK | 会員ID |
-| status | varchar | NO |  | entry/cancel など |
+| status | varchar | NO |  | entry/cancelled など |
 | created_at | datetime | YES |  | |
 | updated_at | datetime | YES |  | |
 
@@ -95,7 +95,7 @@
 |---|---|---:|---|---|
 | id | bigint | NO | PK | 申請ID |
 | user_id | bigint | NO | FK | 申請者 |
-| status | int | NO | IDX | 0=未処理, 1=承認, 2=却下 |
+| status | varchar | NO | IDX | pending/approved/rejected |
 | requested_at | datetime | YES/NO | IDX | 申請日時 |
 | rank_id | bigint | NO | FK | 申請段位（DB必須カラムとして使用） |
 | requested_rank_id | bigint | YES | FK | 申請段位（互換/将来用） |
@@ -130,3 +130,17 @@
 - results: (tournament_id, user_id) unique
 - rank_requests: status, requested_at, approved_at, rejected_at, requested_level
 
+---
+
+## 8. omikuji_draws（御神籤）
+| カラム | 型 | Null | Key | 説明 |
+|---|---|---:|---|---|
+| id | bigint | NO | PK | 御神籤ID |
+| user_id | bigint | NO | FK | 会員ID |
+| result | varchar | NO |  | 結果（大吉/吉/中吉/小吉/凶） |
+| drawn_on | date | NO | IDX | 実施日 |
+| created_at | datetime | YES |  | |
+| updated_at | datetime | YES |  | |
+
+制約
+- (user_id, drawn_on) で一意（1日1回）

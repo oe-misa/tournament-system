@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $missingResultsCount = 0;
         $todayOmikuji = OmikujiDraw::query()
             ->where('user_id', $user->id)
-            ->where('drawn_on', now()->toDateString())
+            ->whereDate('drawn_on', now())
             ->first();
 
         if ($user->is_admin) {

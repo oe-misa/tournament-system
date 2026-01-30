@@ -18,7 +18,7 @@
 
                 <div class="text-sm text-gray-600">開催日: {{ $tournament->event_date->format('Y-m-d') }}</div>
                 <div class="text-sm text-gray-600">
-                    参加条件: {{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}
+                    参加条件: {{ \App\Support\RankLabel::eligibleKyus($tournament->min_rank_level) }}
                 </div>
 
 

@@ -2,6 +2,7 @@
 
 本ドキュメントは、現在の Web（Blade）実装をベースに、
 将来的な React / Next.js 移行を見据えて API 観点で整理した仕様書である。
+現状の API は `/api/*` 配下で提供される。
 
 ---
 
@@ -33,6 +34,7 @@
   "level": 4,
   "label": "四段（A級）"
 }
+```
 ## 3. 大会
 
 ### 大会一覧取得
@@ -52,6 +54,7 @@
     "entry_deadline": "2026-01-10"
   }
 ]
+```
 
 ### 大会詳細取得
 - Method: GET
@@ -64,7 +67,7 @@
 
 ### エントリー
 - Method: POST
-- Path: `/tournaments/{tournament_id}/entry`
+- Path: `/tournaments/{tournament_id}/entries`
 - 認証: 要（会員）
 
 #### 制約
@@ -93,9 +96,10 @@
 #### Request
 ```json
 {
-  "requested_rank_id": 6,
+  "rank_id": 6,
   "note": "申請理由（任意）"
 }
+```
 #### 制約
 - 現在の段位以上のみ申請可能
 - 未処理申請がある場合は申請不可
@@ -128,6 +132,7 @@
 {
   "admin_comment": "承認コメント（任意）"
 }
+```
 
 #### 処理内容
 - status を「承認」に更新
@@ -148,7 +153,6 @@
 ### rank_requests.status
 | 値 | 意味 |
 |---|---|
-| 0 | 未処理 |
-| 1 | 承認 |
-| 2 | 却下 |
-
+| pending | 未処理 |
+| approved | 承認 |
+| rejected | 却下 |

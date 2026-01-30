@@ -13,7 +13,7 @@
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +44,38 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+function createRank(int $level): \App\Models\Rank
+{
+    $kyuMap = [
+        0 => 'F',
+        1 => 'D',
+        2 => 'C',
+        3 => 'B',
+    ];
+
+    if ($level <= 0) {
+        $kyu = $kyuMap[0];
+        $dan = null;
+    } elseif ($level <= 3) {
+        $kyu = $kyuMap[$level];
+        $dan = $level;
+    } else {
+        $kyu = 'A';
+        $dan = $level;
+    }
+
+    return \App\Models\Rank::create([
+        'kyu' => $kyu,
+        'dan' => $dan,
+        'level' => $level,
+    ]);
+}
+
+function createAdmin(): \App\Models\User
+{
+    return \App\Models\User::factory()->create([
+        'is_admin' => true,
+    ]);
 }

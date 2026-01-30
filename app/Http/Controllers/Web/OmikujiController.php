@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OmikujiDraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OmikujiController extends Controller
@@ -15,11 +16,11 @@ class OmikujiController extends Controller
     public function draw(Request $request)
     {
         $user = $request->user();
-        $today = now()->toDateString();
+        $today = now();
 
         $existing = OmikujiDraw::query()
             ->where('user_id', $user->id)
-            ->where('drawn_on', $today)
+            ->whereDate('drawn_on', $today)
             ->first();
 
         if ($existing) {
@@ -30,7 +31,7 @@ class OmikujiController extends Controller
             $draw = DB::transaction(function () use ($user, $today) {
                 $locked = OmikujiDraw::query()
                     ->where('user_id', $user->id)
-                    ->where('drawn_on', $today)
+                    ->whereDate('drawn_on', $today)
                     ->lockForUpdate()
                     ->first();
 
@@ -43,11 +44,13 @@ class OmikujiController extends Controller
                 return OmikujiDraw::create([
                     'user_id' => $user->id,
                     'result' => $result,
-                    'drawn_on' => $today,
+                    'drawn_on' => $today->toDateString(),
                 ]);
             });
         } catch (HttpException $e) {
             return redirect()->route('dashboard')->with('status', $e->getMessage());
+        } catch (QueryException $e) {
+            return redirect()->route('dashboard')->with('status', '本日の御神籤は既に引いています');
         }
 
         return redirect()->route('dashboard')->with('status', '本日の御神籤は「' . $draw->result . '」でした');
