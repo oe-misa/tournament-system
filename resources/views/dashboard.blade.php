@@ -14,6 +14,26 @@
             <div class="heian-card p-6 space-y-4">
                 <div class="text-lg font-bold">メニュー</div>
 
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-[#dbcbb0] rounded-lg p-4 bg-[rgba(246,240,227,0.6)]">
+                    <div>
+                        <div class="font-semibold">本日の御神籤</div>
+                        @if ($todayOmikuji)
+                            <div class="text-sm heian-text-muted mt-1">結果: <span class="font-bold text-[#c1483c]">{{ $todayOmikuji->result }}</span></div>
+                        @else
+                            <div class="text-sm heian-text-muted mt-1">1日1回だけ引けます</div>
+                        @endif
+                    </div>
+
+                    @if ($todayOmikuji)
+                        <button class="heian-btn-secondary" disabled>本日は引きました</button>
+                    @else
+                        <form method="POST" action="{{ route('omikuji.draw') }}">
+                            @csrf
+                            <button class="heian-btn">本日の御神籤を引く</button>
+                        </form>
+                    @endif
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <a href="{{ route('tournaments.index') }}" class="block p-4 rounded border hover:bg-gray-50">
                         <div class="font-semibold">大会</div>

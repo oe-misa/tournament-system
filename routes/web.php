@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\ResultController;
 use App\Http\Controllers\Web\RankRequestController;
 use App\Http\Controllers\Web\MembershipController;
 use App\Http\Controllers\Web\RankDefinitionController;
+use App\Http\Controllers\Web\OmikujiController;
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminTournamentController;
@@ -57,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
     // 会員：年間登録更新
     Route::get('/membership/renew', [MembershipController::class, 'create'])->name('membership.create');
     Route::post('/membership/renew', [MembershipController::class, 'store'])->name('membership.store');
+
+    // 会員：おみくじ
+    Route::post('/omikuji/draw', [OmikujiController::class, 'draw'])->name('omikuji.draw');
 });
 
 // 管理者（auth + admin）

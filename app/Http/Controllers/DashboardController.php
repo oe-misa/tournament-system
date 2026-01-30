@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Entry;
+use App\Models\OmikujiDraw;
 use App\Models\RankRequest;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,10 @@ class DashboardController extends Controller
 
         $pendingRankRequestsCount = 0;
         $missingResultsCount = 0;
+        $todayOmikuji = OmikujiDraw::query()
+            ->where('user_id', $user->id)
+            ->where('drawn_on', now()->toDateString())
+            ->first();
 
         if ($user->is_admin) {
             $pendingRankRequestsCount = RankRequest::query()
@@ -34,6 +39,7 @@ class DashboardController extends Controller
             'user' => $user,
             'pendingRankRequestsCount' => $pendingRankRequestsCount,
             'missingResultsCount' => $missingResultsCount,
+            'todayOmikuji' => $todayOmikuji,
         ]);
     }
 }
