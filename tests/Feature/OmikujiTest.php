@@ -43,6 +43,28 @@ it('allows a user to draw again on the next day', function () {
     Carbon::setTestNow();
 });
 
+it('handles lock conflicts during transaction', function () {
+    $user = User::factory()->create();
+    OmikujiDraw::query()->delete();
+
+    DB::shouldReceive('transaction')
+        ->once()
+        ->andReturnUsing(function ($callback) use ($user) {
+            OmikujiDraw::create([
+                'user_id' => $user->id,
+                'result' => '吉',
+                'drawn_on' => now()->toDateString(),
+            ]);
+
+            return $callback();
+        });
+
+    $this->actingAs($user)
+        ->post('/omikuji/draw')
+        ->assertRedirect('/dashboard')
+        ->assertSessionHas('status', '本日の御神籤は既に引いています');
+});
+
 it('handles draw conflicts gracefully', function () {
     $user = User::factory()->create();
 

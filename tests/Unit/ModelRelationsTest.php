@@ -80,5 +80,7 @@ it('exposes model relationships', function () {
     expect($tournament->entries())->toBeInstanceOf(HasMany::class);
     expect($tournament->results())->toBeInstanceOf(HasMany::class);
 
+    expect($rank->users())->toBeInstanceOf(HasMany::class);
+
     expect($omikuji->user())->toBeInstanceOf(BelongsTo::class);
 });

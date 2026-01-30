@@ -127,3 +127,21 @@ it('rejects non-pending request on reject', function () {
     $this->expectException(HttpException::class);
     $service->reject($admin, $request);
 });
+
+it('rejects rejection by non-admin', function () {
+    $rank = createRank(2);
+    $user = User::factory()->create();
+    $nonAdmin = User::factory()->create(['is_admin' => false]);
+
+    $request = RankRequest::create([
+        'user_id' => $user->id,
+        'rank_id' => $rank->id,
+        'status' => RankRequest::STATUS_PENDING,
+        'requested_at' => now(),
+    ]);
+
+    $service = new RankRequestService();
+
+    $this->expectException(HttpException::class);
+    $service->reject($nonAdmin, $request);
+});
