@@ -1,3 +1,341 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --heian-ink: #2b2a27;
+        --heian-ink-muted: #6b645e;
+        --heian-paper: #f6f0e3;
+        --heian-paper-deep: #efe4d1;
+        --heian-border: #dbcbb0;
+        --heian-vermillion: #c1483c;
+        --heian-moss: #3e5b47;
+        --heian-gold: #b08b3a;
+        --heian-shadow: 0 10px 30px rgba(52, 39, 24, 0.14);
+        --heian-shadow-soft: 0 6px 18px rgba(52, 39, 24, 0.1);
+    }
+
+    html {
+        font-family: "Zen Maru Gothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+        color: var(--heian-ink);
+    }
+
+    body {
+        background:
+            radial-gradient(1200px 600px at 10% -10%, rgba(176, 139, 58, 0.18), transparent 60%),
+            radial-gradient(900px 500px at 90% 0%, rgba(193, 72, 60, 0.16), transparent 55%),
+            linear-gradient(180deg, #f8f3ea 0%, #f2e7d6 100%);
+        color: var(--heian-ink);
+        min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif;
+        letter-spacing: 0.02em;
+    }
+
+    a {
+        color: var(--heian-moss);
+    }
+
+    ::selection {
+        background: rgba(193, 72, 60, 0.2);
+    }
+
+    input,
+    select,
+    textarea {
+        background-color: rgba(246, 240, 227, 0.9);
+        border: 1px solid var(--heian-border);
+        color: var(--heian-ink);
+        border-radius: 0.6rem;
+        padding: 0.55rem 0.75rem;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: 2px solid rgba(193, 72, 60, 0.28);
+        outline-offset: 2px;
+        border-color: rgba(193, 72, 60, 0.55);
+    }
+}
+
+@layer components {
+    .heian-shell {
+        background:
+            linear-gradient(90deg, rgba(219, 203, 176, 0.12), transparent 30%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+    }
+
+    .heian-nav {
+        background: rgba(246, 240, 227, 0.92);
+        border-bottom: 1px solid rgba(219, 203, 176, 0.7);
+        backdrop-filter: blur(8px);
+    }
+
+    .heian-header {
+        background: rgba(246, 240, 227, 0.85);
+        border-bottom: 1px solid rgba(219, 203, 176, 0.7);
+        box-shadow: var(--heian-shadow-soft);
+    }
+
+    .heian-card {
+        background: var(--heian-paper);
+        border: 1px solid rgba(219, 203, 176, 0.9);
+        border-radius: 1rem;
+        box-shadow: var(--heian-shadow-soft);
+        position: relative;
+        overflow: hidden;
+        animation: heian-rise 0.5s ease both;
+    }
+
+    .heian-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(400px 200px at 80% -10%, rgba(176, 139, 58, 0.14), transparent 60%),
+            radial-gradient(500px 220px at -10% 0%, rgba(62, 91, 71, 0.12), transparent 60%);
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .heian-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .heian-pill {
+        background: rgba(62, 91, 71, 0.12);
+        color: var(--heian-moss);
+        border: 1px solid rgba(62, 91, 71, 0.35);
+        border-radius: 999px;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .heian-btn {
+        background: linear-gradient(135deg, #c1483c, #a63b30);
+        color: #fff;
+        border: 1px solid rgba(130, 39, 31, 0.5);
+        border-radius: 999px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: var(--heian-shadow-soft);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .heian-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--heian-shadow);
+    }
+
+    .heian-btn-secondary {
+        background: rgba(246, 240, 227, 0.9);
+        color: var(--heian-ink);
+        border: 1px solid rgba(176, 139, 58, 0.45);
+        border-radius: 999px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .heian-btn-secondary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--heian-shadow-soft);
+    }
+
+    .heian-btn-danger {
+        background: linear-gradient(135deg, #7c2a2a, #5e2020);
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .heian-link {
+        color: var(--heian-moss);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transition: color 0.15s ease;
+    }
+
+    .heian-link:hover {
+        color: var(--heian-vermillion);
+    }
+
+    .site-shell {
+        background: #f7f7f7;
+        color: #333;
+        font-family: "Zen Maru Gothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    .site-header {
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .site-member-btn {
+        border: 1px solid #e34a6f;
+        color: #e34a6f;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .site-member-btn:hover {
+        background: #e34a6f;
+        color: #fff;
+    }
+
+    .site-logo {
+        position: relative;
+        width: 44px;
+        height: 32px;
+    }
+
+    .site-logo-green,
+    .site-logo-yellow,
+    .site-logo-red {
+        position: absolute;
+        display: block;
+        border-radius: 4px;
+    }
+
+    .site-logo-green {
+        width: 28px;
+        height: 22px;
+        background: #1f7a4e;
+        left: 0;
+        top: 2px;
+    }
+
+    .site-logo-yellow {
+        width: 28px;
+        height: 22px;
+        background: #b8c96c;
+        left: 10px;
+        top: 8px;
+    }
+
+    .site-logo-red {
+        width: 16px;
+        height: 16px;
+        background: #e34a6f;
+        right: 4px;
+        top: 0;
+        border-radius: 50%;
+    }
+
+    .site-hero {
+        position: relative;
+        height: 220px;
+        border-radius: 8px;
+        overflow: hidden;
+        background:
+            linear-gradient(120deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.05)),
+            repeating-linear-gradient(45deg, #f5e5d6, #f5e5d6 14px, #edd8c8 14px, #edd8c8 28px);
+    }
+
+    .site-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.5), transparent 45%),
+            radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.35), transparent 50%);
+    }
+
+    .site-hero-caption {
+        position: absolute;
+        right: 16px;
+        bottom: 12px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+        color: #555;
+        border-radius: 999px;
+    }
+
+    .site-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .site-input {
+        flex: 1;
+        border: 1px solid #e5e5e5;
+        background: #fafafa;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+    }
+
+    .site-search-btn {
+        background: #e34a6f;
+        color: #fff;
+        border-radius: 6px;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .site-cat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0;
+        border-bottom: 1px dashed #e5e5e5;
+    }
+
+    .site-cat-item::before {
+        content: "›";
+        color: #e34a6f;
+        font-weight: 700;
+    }
+}
+
+@layer utilities {
+    .heian-text-muted {
+        color: var(--heian-ink-muted);
+    }
+
+    .heian-border {
+        border-color: rgba(219, 203, 176, 0.9);
+    }
+}
+
+@keyframes heian-rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .heian-card {
+        animation: none;
+    }
+
+    .heian-btn,
+    .heian-btn-secondary {
+        transition: none;
+    }
+}

@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="heian-card p-6">
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr class="border-b">

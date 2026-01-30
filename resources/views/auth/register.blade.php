@@ -1,4 +1,8 @@
 <x-guest-layout>
+    <div class="mb-4">
+        <a href="{{ route('member.mypage') }}" class="heian-link text-sm">前の画面に戻る</a>
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -48,5 +52,6 @@
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+
     </form>
 </x-guest-layout>

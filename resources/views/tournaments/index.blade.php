@@ -5,12 +5,12 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="heian-card p-6">
                 <ul class="space-y-3">
                     @foreach ($tournaments as $t)
                         <li class="border-b pb-3">
                             <div class="font-bold">
-                                <a class="text-blue-600 underline"
+                                <a class="heian-link"
                                     href="{{ route('tournaments.show', $t) }}">{{ $t->title }}</a>
                             </div>
                             <div class="text-sm text-gray-600">開催日: {{ $t->event_date->format('Y-m-d') }}</div>

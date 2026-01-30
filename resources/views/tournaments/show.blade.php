@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-4">
+            <div class="heian-card p-6 space-y-4">
                 @if (session('status'))
                     <div class="p-3 bg-green-100 rounded">{{ session('status') }}</div>
                 @endif

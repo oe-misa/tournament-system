@@ -5,8 +5,8 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-4 border-l-4 border-indigo-600">
-                <div class="text-lg font-bold text-indigo-700">管理者メニュー</div>
+            <div class="heian-card p-6 space-y-4 border-l-4 border-[#b08b3a]">
+                <div class="text-lg font-bold text-[#6b4f2b]">管理者メニュー</div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <a href="{{ route('admin.rank_requests.index') }}" class="block p-4 rounded border hover:bg-gray-50">
@@ -15,12 +15,12 @@
 
                             @if (($pendingRankRequestsCount ?? 0) > 0)
                                 <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-600 text-white">
+                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-[#c1483c] text-white">
                                     未処理 {{ $pendingRankRequestsCount }}
                                 </span>
                             @else
                                 <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-700">
+                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-[rgba(219,203,176,0.5)] text-[#6b645e]">
                                     未処理 0
                                 </span>
                             @endif
@@ -33,12 +33,12 @@
 
                             @if (($missingResultsCount ?? 0) > 0)
                                 <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-orange-600 text-white">
+                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-[#b08b3a] text-white">
                                     成績未入力 {{ $missingResultsCount }}
                                 </span>
                             @else
                                 <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-700">
+                                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-[rgba(219,203,176,0.5)] text-[#6b645e]">
                                     成績未入力 0
                                 </span>
                             @endif

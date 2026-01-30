@@ -26,7 +26,7 @@
             @endif
 
             {{-- 現在情報 --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-3">
+            <div class="heian-card p-6 space-y-3">
                 <div class="text-lg font-bold">現在の情報</div>
 
                 <div class="text-sm text-gray-700">
@@ -46,12 +46,12 @@
                 </div>
 
                 <div>
-                    <a href="{{ route('rank_requests.create') }}" class="text-blue-600 underline">段位申請へ</a>
+                    <a href="{{ route('rank_requests.create') }}" class="heian-link">段位申請へ</a>
                 </div>
             </div>
 
             {{-- 基本情報更新 --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
+            <div class="heian-card p-6 space-y-4">
                 <div class="text-lg font-bold">基本情報の変更</div>
 
                 <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
@@ -90,13 +90,13 @@
 
                     <div class="flex justify-end gap-2">
                         <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded border">ダッシュボードへ</a>
-                        <button class="px-4 py-2 rounded bg-indigo-600 text-white">更新する</button>
+                        <button class="heian-btn">更新する</button>
                     </div>
                 </form>
             </div>
 
             {{-- アカウント削除 --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
+            <div class="heian-card p-6 space-y-4">
                 <div class="text-lg font-bold text-red-700">アカウント削除</div>
 
                 <form method="POST" action="{{ route('profile.destroy') }}" class="space-y-3">
@@ -112,7 +112,7 @@
                         <input name="password" type="password" class="mt-1 w-full border-gray-300 rounded" required>
                     </div>
 
-                    <button class="px-4 py-2 rounded bg-red-600 text-white"
+                    <button class="heian-btn-danger"
                         onclick="return confirm('本当にアカウントを削除しますか？この操作は取り消せません。')">
                         削除する
                     </button>

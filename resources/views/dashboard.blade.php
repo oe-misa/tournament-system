@@ -11,7 +11,7 @@
             @endif
 
             {{-- 会員メニュー --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
+            <div class="heian-card p-6 space-y-4">
                 <div class="text-lg font-bold">メニュー</div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -49,8 +49,8 @@
 
             {{-- 管理者メニュー（管理者だけ） --}}
             @if (auth()->user()?->is_admin)
-                <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4 border-l-4 border-indigo-600">
-                    <div class="text-lg font-bold text-indigo-700">管理者メニュー</div>
+                <div class="heian-card p-6 space-y-4 border-l-4 border-[#b08b3a]">
+                    <div class="text-lg font-bold text-[#6b4f2b]">管理者メニュー</div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <a href="{{ route('admin.rank_requests.index') }}"
@@ -58,7 +58,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold">段位申請管理</span>
                                 @if (($pendingRankRequestsCount ?? 0) > 0)
-                                    <span class="px-2 py-1 text-xs rounded-full bg-red-600 text-white">
+                                    <span class="px-2 py-1 text-xs rounded-full bg-[#c1483c] text-white">
                                         未処理 {{ $pendingRankRequestsCount }}
                                     </span>
                                 @endif
@@ -70,7 +70,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold">大会管理</span>
                                 @if (($missingResultsCount ?? 0) > 0)
-                                    <span class="px-2 py-1 text-xs rounded-full bg-orange-600 text-white">
+                                    <span class="px-2 py-1 text-xs rounded-full bg-[#b08b3a] text-white">
                                         成績未入力 {{ $missingResultsCount }}
                                     </span>
                                 @endif

@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-4">
+            <div class="heian-card p-6 space-y-4">
 
                 @if (session('status'))
                     <div class="p-3 bg-green-100 rounded">{{ session('status') }}</div>
@@ -47,13 +47,13 @@
                                     </td>
 
                                     <td class="py-2">
-                                        @if ((int) $r->status === \App\Models\RankRequest::STATUS_PENDING)
+                                        @if ($r->status === \App\Models\RankRequest::STATUS_PENDING)
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-yellow-200 text-yellow-800">未処理</span>
-                                        @elseif((int) $r->status === \App\Models\RankRequest::STATUS_APPROVED)
+                                        @elseif($r->status === \App\Models\RankRequest::STATUS_APPROVED)
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-green-200 text-green-800">承認</span>
-                                        @elseif((int) $r->status === \App\Models\RankRequest::STATUS_REJECTED)
+                                        @elseif($r->status === \App\Models\RankRequest::STATUS_REJECTED)
                                             <span
                                                 class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">却下</span>
                                         @else
@@ -71,7 +71,7 @@
                                     </td>
 
                                     <td class="py-2">
-                                        @if ((int) $r->status === \App\Models\RankRequest::STATUS_PENDING)
+                                        @if ($r->status === \App\Models\RankRequest::STATUS_PENDING)
                                             <form method="POST" class="space-y-2">
                                                 @csrf
 
@@ -80,14 +80,14 @@
                                                 <div class="space-x-2">
                                                     <button type="submit"
                                                         formaction="{{ route('admin.rank_requests.approve', $r) }}"
-                                                        class="px-3 py-1 rounded bg-green-600 text-white"
+                                                        class="heian-btn"
                                                         onclick="return confirm('承認してユーザー段位を更新します。よろしいですか？')">
                                                         承認
                                                     </button>
 
                                                     <button type="submit"
                                                         formaction="{{ route('admin.rank_requests.reject', $r) }}"
-                                                        class="px-3 py-1 rounded bg-gray-700 text-white"
+                                                        class="heian-btn-danger"
                                                         onclick="return confirm('却下します。よろしいですか？')">
                                                         却下
                                                     </button>
@@ -100,7 +100,7 @@
                                     </td>
 
                                     <td class="py-2">
-                                        @if ((int) $r->status === \App\Models\RankRequest::STATUS_PENDING)
+                                        @if ($r->status === \App\Models\RankRequest::STATUS_PENDING)
                                             <span class="text-gray-500">操作は左で入力</span>
                                         @else
                                             <span class="text-gray-500">処理済み</span>
@@ -115,7 +115,7 @@
                 @endif
 
                 <div class="pt-2">
-                    <a href="{{ route('admin.dashboard') }}" class="text-blue-600 underline">管理者ダッシュボードへ</a>
+                    <a href="{{ route('admin.dashboard') }}" class="heian-link">管理者ダッシュボードへ</a>
                 </div>
 
             </div>

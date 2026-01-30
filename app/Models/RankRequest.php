@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RankRequest extends Model
 {
-    public const STATUS_PENDING  = 0;
-    public const STATUS_APPROVED = 1;
-    public const STATUS_REJECTED = 2;
+    public const STATUS_PENDING  = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'user_id',
@@ -33,7 +33,7 @@ class RankRequest extends Model
     ];
 
     protected $casts = [
-        'status' => 'integer',
+        'status' => 'string',
         'requested_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',

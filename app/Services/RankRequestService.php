@@ -13,18 +13,18 @@ class RankRequestService
     /**
      * 段位申請を作成
      */
-    public function request(User $user, Rank $targetRank, ?string $comment = null): RankRequest
+    public function request(User $user, Rank $targetRank, ?string $note = null): RankRequest
     {
-        // 申請先が現在より下/同等は不可（原則）
+        // 申請先が現在より下は不可
         $currentLevel = $user->rank?->level ?? 0;
-        if ($targetRank->level <= $currentLevel) {
-            throw new HttpException(422, '現在より上の段位のみ申請できます');
+        if ($targetRank->level < $currentLevel) {
+            throw new HttpException(422, '現在の段位より下は申請できません');
         }
 
         // 既にpendingがあれば不可（運用上わかりやすい）
         $hasPending = RankRequest::query()
             ->where('user_id', $user->id)
-            ->where('status', 'pending')
+            ->where('status', RankRequest::STATUS_PENDING)
             ->exists();
 
         if ($hasPending) {
@@ -34,9 +34,11 @@ class RankRequestService
         return RankRequest::create([
             'user_id' => $user->id,
             'rank_id' => $targetRank->id,
-            'status' => 'pending',
-            'comment' => $comment,
+            'status' => RankRequest::STATUS_PENDING,
             'requested_at' => now(),
+            'requested_rank_id' => $targetRank->id,
+            'requested_level' => (int)$targetRank->level,
+            'note' => $note,
         ]);
     }
 
@@ -48,7 +50,7 @@ class RankRequestService
         if (!$admin->is_admin) {
             throw new HttpException(403, '管理者のみ実行できます');
         }
-        if ($request->status !== 'pending') {
+        if ($request->status !== RankRequest::STATUS_PENDING) {
             throw new HttpException(409, 'この申請は既に処理済みです');
         }
 
@@ -60,17 +62,13 @@ class RankRequestService
             $user->save();
 
             // 申請更新
-            $request->status = 'approved';
+            $request->status = RankRequest::STATUS_APPROVED;
             $request->approved_at = now();
-            $request->processed_by = $admin->id;
-            if ($comment) {
-                // approvalsのcommentとして残したいなら運用次第。
-                // 今回は既存commentに追記する簡易方式
-                $request->comment = trim(($request->comment ?? '') . "\n[ADMIN] " . $comment);
-            }
+            $request->approved_by = $admin->id;
+            $request->admin_comment = $comment;
             $request->save();
 
-            return $request->fresh(['rank', 'user', 'processedBy']);
+            return $request->fresh(['rank', 'user', 'approver', 'rejector']);
         });
     }
 
@@ -82,18 +80,16 @@ class RankRequestService
         if (!$admin->is_admin) {
             throw new HttpException(403, '管理者のみ実行できます');
         }
-        if ($request->status !== 'pending') {
+        if ($request->status !== RankRequest::STATUS_PENDING) {
             throw new HttpException(409, 'この申請は既に処理済みです');
         }
 
-        $request->status = 'rejected';
-        $request->approved_at = now();
-        $request->processed_by = $admin->id;
-        if ($comment) {
-            $request->comment = trim(($request->comment ?? '') . "\n[ADMIN] " . $comment);
-        }
+        $request->status = RankRequest::STATUS_REJECTED;
+        $request->rejected_at = now();
+        $request->rejected_by = $admin->id;
+        $request->admin_comment = $comment;
         $request->save();
 
-        return $request->fresh(['rank', 'user', 'processedBy']);
+        return $request->fresh(['rank', 'user', 'approver', 'rejector']);
     }
 }

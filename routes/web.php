@@ -18,8 +18,12 @@ use App\Http\Controllers\Admin\AdminRankRequestController;
 use App\Http\Controllers\Admin\AdminResultController;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('site.landing');
+})->name('site.landing');
+
+Route::get('/mypage', function () {
+    return view('site.mypage');
+})->name('member.mypage');
 
 // 会員（authのみ）
 Route::middleware(['auth'])->group(function () {

@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-4">
+            <div class="heian-card p-6 space-y-4">
 
                 @if ($errors->any())
                     <div class="p-3 bg-red-100 rounded">
@@ -63,8 +63,8 @@
                     </div>
 
                     <div class="flex justify-end gap-2">
-                        <a href="{{ route('admin.tournaments.index') }}" class="px-4 py-2 rounded border">戻る</a>
-                        <button class="px-4 py-2 rounded bg-indigo-600 text-white">作成</button>
+                        <a href="{{ route('admin.tournaments.index') }}" class="heian-btn-secondary">戻る</a>
+                        <button class="heian-btn">作成</button>
                     </div>
                 </form>
 

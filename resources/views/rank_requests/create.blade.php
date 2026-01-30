@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
+            <div class="heian-card p-6 space-y-4">
 
                 {{-- エラー表示 --}}
                 @if ($errors->any())
@@ -28,12 +28,12 @@
 
                 {{-- 選択プレビュー（定義から取得して表示） --}}
                 <div id="rankPreview"
-                    class="p-3 bg-indigo-50 border border-indigo-200 rounded text-sm text-indigo-900 hidden">
+                    class="p-3 bg-[rgba(62,91,71,0.12)] border border-[rgba(62,91,71,0.35)] rounded text-sm text-[#2b2a27] hidden">
                     <div class="font-semibold">申請内容プレビュー</div>
                     <div class="mt-1">
                         申請段位：<span id="previewLabel" class="font-bold"></span>
                     </div>
-                    <div class="mt-1 text-xs text-indigo-800">
+                    <div class="mt-1 text-xs text-[#3e5b47]">
                         参加条件表示例：<span id="previewEligible"></span>
                     </div>
                 </div>
@@ -74,8 +74,8 @@
                     </div>
 
                     <div class="flex justify-end gap-2">
-                        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded border">戻る</a>
-                        <button class="px-4 py-2 rounded bg-indigo-600 text-white">申請する</button>
+                        <a href="{{ route('dashboard') }}" class="heian-btn-secondary">戻る</a>
+                        <button class="heian-btn">申請する</button>
                     </div>
                 </form>
 

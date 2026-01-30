@@ -5,7 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-4">
+            <div class="heian-card p-6 space-y-4">
 
                 @if (session('status'))
                     <div class="p-3 bg-green-100 rounded">{{ session('status') }}</div>
@@ -72,13 +72,13 @@
                         <form method="POST" action="{{ route('admin.tournaments.destroy', $tournament) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="px-4 py-2 rounded bg-red-600 text-white"
+                            <button class="heian-btn-danger"
                                 onclick="return confirm('削除しますか？')">削除</button>
                         </form>
 
                         <div class="flex gap-2">
-                            <a href="{{ route('admin.tournaments.index') }}" class="px-4 py-2 rounded border">戻る</a>
-                            <button class="px-4 py-2 rounded bg-indigo-600 text-white">更新</button>
+                            <a href="{{ route('admin.tournaments.index') }}" class="heian-btn-secondary">戻る</a>
+                            <button class="heian-btn">更新</button>
                         </div>
                     </div>
                 </form>

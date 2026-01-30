@@ -1,6 +1,8 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="mb-4 flex items-center justify-between">
+        <a href="{{ route('member.mypage') }}" class="heian-link text-sm">前の画面に戻る</a>
+        <x-auth-session-status :status="session('status')" />
+    </div>
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
@@ -27,7 +29,7 @@
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <input id="remember_me" type="checkbox" class="rounded border-[#dbcbb0] text-[#c1483c] shadow-sm focus:ring-[#c1483c]" name="remember">
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
         </div>
@@ -43,5 +45,6 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
     </form>
 </x-guest-layout>

@@ -8,24 +8,24 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=kaisei-decol:400,500,700|zen-maru-gothic:400,500,700&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="antialiased">
+    <div class="min-h-screen heian-shell">
         @include('layouts.navigation')
 
         @isset($header)
-            <header class="bg-white shadow">
+            <header class="heian-header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     <div>
                         {{ $header }}
                     </div>
 
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-sm text-blue-600 underline">
+                        <a href="{{ route('dashboard') }}" class="text-sm heian-link">
                             ダッシュボードへ
                         </a>
                     @endauth
