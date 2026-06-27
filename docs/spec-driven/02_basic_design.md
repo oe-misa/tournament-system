@@ -13,23 +13,24 @@
 
 | 区分 | 画面 | URL | 概要 |
 | --- | --- | --- | --- |
-| 公開 | トップ | `/` | 会員ポータルと公式サイトへの導線 |
+| 公開 | トップ | `/` | 会員ポータルと公式案内への導線 |
 | 公開 | 会員入口 | `/mypage` | ログイン・新規登録への導線 |
 | 認証 | ログイン | `/login` | Breeze ログイン |
 | 認証 | 新規登録 | `/register` | Breeze 登録 |
 | 会員 | ダッシュボード | `/dashboard` | 会員状態、主要導線、おみくじ |
 | 会員 | プロフィール | `/profile` | 氏名、メール、パスワード、退会 |
 | 会員 | 大会一覧 | `/tournaments` | 大会一覧 |
-| 会員 | 大会詳細 | `/tournaments/{tournament}` | 大会詳細、エントリー、状態表示 |
+| 会員 | 大会詳細 | `/tournaments/{tournament}` | 大会詳細、エントリー |
 | 会員 | 成績一覧 | `/results` | 自分の成績一覧 |
-| 会員 | 年間登録 | `/membership/renew` | 年度単位の年間登録申請 |
+| 会員 | 年間登録 | `/membership/renew` | 年度単位の更新画面 |
 | 会員 | 段位申請 | `/rank-requests` | 段位申請フォーム |
 | 会員 | 段位申請履歴 | `/rank-requests/history` | 自分の申請履歴 |
 | 管理 | 管理ダッシュボード | `/admin` | 管理メニュー、未処理件数 |
-| 管理 | 大会管理 | `/admin/tournaments` | 大会 CRUD、状態管理 |
+| 管理 | 大会管理 | `/admin/tournaments` | 大会 CRUD |
+| 管理 | 大会作成 | `/admin/tournaments/create` | 大会作成 |
+| 管理 | 大会編集 | `/admin/tournaments/{tournament}/edit` | 大会編集 |
 | 管理 | 成績入力 | `/admin/tournaments/{tournament}/results` | 大会別成績入力 |
 | 管理 | 段位申請管理 | `/admin/rank-requests` | 段位申請の承認・却下 |
-| 管理 | 年間登録管理 | `/admin/memberships` | 年間登録申請の承認・却下 |
 
 ## Web ルート
 
@@ -49,7 +50,6 @@
 - `GET /tournaments`
 - `GET /tournaments/{tournament}`
 - `POST /tournaments/{tournament}/entry`
-- `POST /tournaments/{tournament}/cancel`
 - `GET /results`
 - `GET /membership/renew`
 - `POST /membership/renew`
@@ -68,9 +68,6 @@
 - `GET /admin/rank-requests`
 - `POST /admin/rank-requests/{rankRequest}/approve`
 - `POST /admin/rank-requests/{rankRequest}/reject`
-- `GET /admin/memberships`
-- `POST /admin/memberships/{membership}/approve`
-- `POST /admin/memberships/{membership}/reject`
 - `GET /admin/tournaments/{tournament}/results`
 - `POST /admin/tournaments/{tournament}/results`
 
@@ -84,11 +81,8 @@
 | GET | `/api/tournaments` | 大会一覧 |
 | GET | `/api/tournaments/{tournament}` | 大会詳細 |
 | POST | `/api/tournaments/{tournament}/entries` | 大会エントリー |
-| POST | `/api/tournaments/{tournament}/cancel` | 大会キャンセル |
 | GET | `/api/results` | 自分の成績一覧 |
-| GET | `/api/rank-requests` | 自分の段位申請履歴 |
 | POST | `/api/rank-requests` | 段位申請 |
-| POST | `/api/memberships` | 年間登録申請 |
 
 ## DB 概要
 
@@ -99,7 +93,7 @@
 | `tournaments` | 大会 |
 | `entries` | 大会エントリー |
 | `results` | 大会成績 |
-| `memberships` | 年間登録申請・履歴 |
+| `memberships` | 年間登録履歴 |
 | `rank_requests` | 段位申請と処理履歴 |
 | `omikuji_draws` | 日次おみくじ結果 |
 | `personal_access_tokens` | Sanctum API token |
@@ -114,20 +108,12 @@
 4. 問題なければ `entries` に登録する。
 5. Web はリダイレクト、API は JSON を返す。
 
-### 大会キャンセル
-
-1. 会員または管理者がキャンセル操作を行う。
-2. `EntryService` が締切との差分と操作者種別を判定する。
-3. 締切 10 日前までは会員キャンセルを許可する。
-4. 以後締切までは管理者キャンセルのみ許可する。
-
 ### 年間登録
 
 1. 会員が年間登録画面を開く。
-2. `MembershipService::preview()` が今回申請対象の年度期間と実行可否を返す。
-3. 会員が申請ボタンを押す。
-4. `MembershipService::request()` が年度単位で申請を作成する。
-5. 管理者が承認した時点で `memberships` に履歴を作成し、`users.membership_expires_at` を更新する。
+2. `MembershipService::preview()` が今回の更新対象期間と実行可否を返す。
+3. 会員が更新ボタンを押す。
+4. `MembershipService::renew()` が `memberships` に履歴を作成し、`users.membership_expires_at` を更新する。
 
 ### 段位申請
 
@@ -151,3 +137,4 @@
 2. 当日分の既存結果を確認する。
 3. 未作成ならランダムに結果を決めて `omikuji_draws` に保存する。
 4. 同日重複は既に引いた扱いで返す。
+
