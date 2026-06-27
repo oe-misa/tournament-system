@@ -7,7 +7,7 @@
 - `index(Request $request)`
   - ログインユーザーと段位を取得する。
   - 当日のおみくじ結果を取得する。
-  - 管理者の場合、未処理段位申請数と成績未入力数を集計する。
+  - 管理者の場合、未処理段位申請数、未処理年間登録申請数、成績未入力数を集計する。
   - `dashboard` view を返す。
 
 ### ProfileController
@@ -31,6 +31,9 @@
 - `store`
   - `EntryService::entry()` を呼ぶ。
   - `HttpException` は画面向けのエラーメッセージとして扱う。
+- `cancel`
+  - `EntryService::cancel()` を呼ぶ。
+  - 締切 10 日前ルールは Service 側で判定する。
 
 ### Web\ResultController
 
@@ -40,11 +43,10 @@
 ### Web\MembershipController
 
 - `create`
-  - `MembershipService::preview()` で登録対象期間を取得する。
+  - `MembershipService::preview()` で申請対象期間を取得する。
   - 年間登録画面へ `user` と `membershipPreview` を渡す。
 - `store`
-  - 年数入力は受け取らない。
-  - `MembershipService::renew()` を呼ぶ。
+  - `MembershipService::request()` を呼ぶ。
   - 失敗時は `HttpException` のメッセージを表示する。
 
 ### Web\RankRequestController
@@ -83,6 +85,7 @@
   - `entry_deadline`
   - `capacity`
   - `min_rank_level`
+  - `status`
 
 ### Admin\AdminResultController
 
@@ -102,10 +105,20 @@
 - `reject`
   - 管理者コメントを validate し、`RankRequestService::reject()` を呼ぶ。
 
+### Admin\AdminMembershipController
+
+- `index`
+  - 年間登録申請一覧を表示する。
+- `approve`
+  - 管理者コメントを validate し、`MembershipService::approve()` を呼ぶ。
+- `reject`
+  - 管理者コメントを validate し、`MembershipService::reject()` を呼ぶ。
+
 ### Api Controllers
 
 - Web と同じ Service を使える処理は Service を再利用する。
 - `HttpException` は JSON `message` と HTTP status へ変換する。
+- API は機能を広げるが、危険度の高い機能は段階的に限定する。
 
 ## Service
 
@@ -119,22 +132,31 @@
   - 登録可能なら `Entry` を作成する。
 - `cancel(User $user, Tournament $tournament): void`
   - エントリー状態を `cancelled` にする。
+  - 会員キャンセルと管理者キャンセルの条件分岐を内部で判定する。
 
 ### MembershipService
 
 - `preview(User $user): array`
-  - 画面表示用に登録対象期間と実行可否を返す。
+  - 画面表示用に申請対象期間と実行可否を返す。
   - DB 更新は行わない。
-- `renew(User $user, ?string $note = null): User`
+- `request(User $user, ?string $note = null): Membership`
   - 登録対象期間を解決する。
   - 登録不可なら `HttpException` を投げる。
-  - `memberships` に履歴を作成する。
-  - `users.membership_expires_at` を対象年度末へ更新する。
+  - `memberships` に pending 申請を作成する。
+- `approve(User $admin, Membership $membership, ?string $comment = null): Membership`
+  - 管理者以外を拒否する。
+  - pending 以外を拒否する。
+  - 承認時に `users.membership_expires_at` を対象年度末へ更新する。
+- `reject(User $admin, Membership $membership, ?string $comment = null): Membership`
+  - 管理者以外を拒否する。
+  - pending 以外を拒否する。
+  - 却下情報を保存する。
 - 年度判定:
   - 4/1 以降は同年 4/1 を年度開始とする。
   - 1/1〜3/31 は前年 4/1 を年度開始とする。
   - 年度終了は翌 3/31。
   - 翌年度更新開始日は年度終了年の 3/10。
+  - 新規/期限切れ会員はその時点の当年度を対象とする。
 
 ### RankRequestService
 
@@ -171,12 +193,14 @@
 - `entries`, `results` を持つ。
 - `event_date` は `date` cast。
 - `entry_deadline` は `datetime` cast。
+- `status` を持つ。
 
 ### Entry
 
 - 会員の大会エントリー。
 - `user`, `tournament` に属する。
 - `status` は `entry` / `cancelled` を想定する。
+- キャンセル日時やキャンセル者区分を追加する余地を残す。
 
 ### Result
 
@@ -185,8 +209,9 @@
 
 ### Membership
 
-- 年間登録履歴。
+- 年間登録申請・履歴。
 - `start_date`, `end_date` は `date` cast。
+- `status` を持ち、`pending` / `approved` / `rejected` を扱う。
 - 現在状態は `users.membership_expires_at` を参照する。
 
 ### RankRequest

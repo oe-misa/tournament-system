@@ -6,12 +6,12 @@ SPEC 駆動の正本は `docs/spec-driven/` 配下とする。
 
 ```text
 docs/spec-driven/
-  01_specification.md       # 何を作るか
-  02_basic_design.md        # 画面・API・DB・処理の大枠
-  03_detailed_design.md     # Controller / Service / Model レベルの実装方針
-  04_test_specification.md  # 完成条件・テストケース
-  05_development_tasks.md   # 実装タスク分解
-  06_project_structure.md   # フォルダ構成・責務分担
+  01_specification.md        # 何を作るか
+  02_basic_design.md         # 画面・API・DB・処理の大枠
+  03_detailed_design.md      # Controller / Service / Model レベルの実装方針
+  04_test_specification.md   # 完成条件・テストケース
+  05_development_tasks.md    # 実装タスク分解
+  06_project_structure.md    # フォルダ構成・責務分担
   07_error_logging_policy.md # エラー処理・ログ出力基準
 ```
 
@@ -111,12 +111,12 @@ tests/
 - View: `resources/views/membership/create.blade.php`
 - Tests: `tests/Unit/Services/MembershipServiceTest.php`, `tests/Feature/Web/MemberControllersTest.php`
 
-### 大会エントリー
+### 大会キャンセル
 
-- Controller: `app/Http/Controllers/Web/EntryController.php`, `app/Http/Controllers/Api/EntryController.php`
+- Controller: `app/Http/Controllers/Web/EntryController.php` または専用 Controller を追加
 - Service: `app/Services/EntryService.php`
 - Model: `app/Models/Entry.php`, `app/Models/Tournament.php`, `app/Models/User.php`
-- Views: `resources/views/tournaments/*`
+- View: `resources/views/tournaments/*`
 - Tests: `tests/Unit/Services/EntryServiceTest.php`, `tests/Feature/Web/EntryControllerTest.php`
 
 ### 段位申請
@@ -126,6 +126,13 @@ tests/
 - Model: `app/Models/RankRequest.php`, `app/Models/Rank.php`
 - Views: `resources/views/rank_requests/*`, `resources/views/admin/rank_requests/*`
 - Tests: `tests/Unit/Services/RankRequestServiceTest.php`, `tests/Feature/Web/MemberControllersTest.php`, `tests/Feature/Admin/AdminControllersTest.php`
+
+### 大会
+
+- Controller: `app/Http/Controllers/Web/TournamentController.php`, `app/Http/Controllers/Admin/AdminTournamentController.php`, `app/Http/Controllers/Api/TournamentController.php`
+- Model: `app/Models/Tournament.php`
+- Views: `resources/views/tournaments/*`, `resources/views/admin/tournaments/*`
+- Tests: `tests/Feature/Web/MemberControllersTest.php`, `tests/Feature/Admin/AdminControllersTest.php`, `tests/Feature/Api/ApiControllersTest.php`
 
 ### 成績
 
