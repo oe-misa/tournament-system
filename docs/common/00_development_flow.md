@@ -2,14 +2,14 @@
 
 ## 目的
 
-このドキュメントは、今後の開発を `Requirements.md` 起点で進めるための標準フローを定義する。
+このドキュメントは、今後の開発を `Requirements.md` 起点で進めるための共通フローを定義する。
 
 開発は次の順で進める。
 
 1. `Requirements.md` を作成する
 2. `SPECIFICATION.md` を作成する
-3. `SPECIFICATION.md` をもとに基本設計を作成する
-4. 基本設計までをもとに詳細設計を作成する
+3. `02_basic_design.md` を作成する
+4. `03_detailed_design.md` を作成する
 5. 詳細設計をもとにコードを書く
 
 ## 基本原則
@@ -36,13 +36,13 @@
 - 業務ルール、画面、API、データの関係を固定する。
 - ここで仕様の抜けを潰す。
 
-### 基本設計
+### 02_basic_design.md
 
 - 画面、API、DB、処理の全体像をまとめる。
 - 機能間の関係と責務分担を明記する。
 - 実装方針の大枠を決める。
 
-### 詳細設計
+### 03_detailed_design.md
 
 - Controller / Service / Model 単位の実装方針を定義する。
 - 入出力、例外、分岐、保存単位を具体化する。
@@ -65,7 +65,7 @@
 - 仮説事項が仮説として書かれている
 - 主要な利用者と権限が整理されている
 
-### 2. SPECIFICATION から 基本設計へ
+### 2. SPECIFICATION から 02_basic_design.md へ
 
 次を満たしたら進める。
 
@@ -73,7 +73,7 @@
 - 画面、API、DB の関係が整理されている
 - 業務ルールが実装可能な粒度で書かれている
 
-### 3. 基本設計から 詳細設計へ
+### 3. 02_basic_design.md から 03_detailed_design.md へ
 
 次を満たしたら進める。
 
@@ -81,7 +81,7 @@
 - 画面遷移、API 入出力、DB 更新の流れが固まっている
 - 例外時の扱いが決まっている
 
-### 4. 詳細設計から コードへ
+### 4. 03_detailed_design.md から コードへ
 
 次を満たしたら進める。
 
@@ -102,6 +102,6 @@
 - `docs/spec-driven/03_detailed_design.md`
 - `docs/spec-driven/04_test_specification.md`
 - `docs/spec-driven/05_development_tasks.md`
-- `docs/spec-driven/06_project_structure.md`
-- `docs/spec-driven/07_error_logging_policy.md`
+- `docs/common/06_project_structure.md`
+- `docs/common/07_error_logging_policy.md`
 
