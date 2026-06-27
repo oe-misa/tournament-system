@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rank_requests', function (Blueprint $table) {
-            // まだ無い前提で追加（すでにあるなら migration 実行時にエラーになるので教えて）
             $table->unsignedBigInteger('requested_rank_id')->nullable()->after('status');
             $table->unsignedTinyInteger('requested_level')->nullable()->after('requested_rank_id');
             $table->text('note')->nullable()->after('requested_level');
@@ -17,7 +16,6 @@ return new class extends Migration
             $table->index('requested_rank_id');
             $table->index('requested_level');
 
-            // ranks テーブルが存在する前提
             $table->foreign('requested_rank_id')
                 ->references('id')
                 ->on('ranks')

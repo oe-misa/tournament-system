@@ -13,10 +13,8 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tournament_id')->constrained()->cascadeOnDelete();
 
-            // 順位（null許可）
             $table->unsignedInteger('placing')->nullable();
 
-            // 得点など（競技仕様に合わせて後で拡張可能）
             $table->integer('score')->nullable();
 
             $table->text('note')->nullable();

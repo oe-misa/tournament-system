@@ -44,7 +44,6 @@ class RankRequestController extends Controller
         return redirect()->route('dashboard')->with('status', '段位申請を受け付けました（管理者の承認待ち）');
     }
 
-    // ★会員：段位申請の履歴
     public function history(Request $request)
     {
         $user = $request->user();

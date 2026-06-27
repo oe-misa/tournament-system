@@ -15,13 +15,11 @@ class RankRequestController extends Controller
         $validated = $request->validate([
             'rank_id' => ['required', 'integer', 'exists:ranks,id'],
             'note' => ['nullable', 'string', 'max:2000'],
-            'comment' => ['nullable', 'string', 'max:2000'],
         ]);
 
         try {
             $rank = Rank::findOrFail($validated['rank_id']);
-            $note = $validated['note'] ?? $validated['comment'] ?? null;
-            $rr = $service->request($request->user(), $rank, $note);
+            $rr = $service->request($request->user(), $rank, $validated['note'] ?? null);
 
             return response()->json([
                 'message' => '段位申請を受け付けました',

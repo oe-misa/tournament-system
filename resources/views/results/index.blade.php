@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="hub-page space-y-6">
         <div>
-            <h1 class="hub-title">大会結果</h1>
+            <h1 class="hub-title">成績一覧</h1>
             <p class="hub-muted mt-1">これまでの成績一覧です。</p>
         </div>
 

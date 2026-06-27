@@ -49,7 +49,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rank-requests', [RankRequestController::class, 'create'])->name('rank_requests.create');
     Route::post('/rank-requests', [RankRequestController::class, 'store'])->name('rank_requests.store');
 
-    // ★会員：段位申請 履歴
     Route::get('/rank-requests/history', [RankRequestController::class, 'history'])->name('rank_requests.history');
 
     // 段位定義（選択時に取得してプレビューに使う）

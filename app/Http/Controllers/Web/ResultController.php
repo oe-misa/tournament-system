@@ -11,9 +11,12 @@ class ResultController extends Controller
     public function index(Request $request)
     {
         $results = Result::query()
+            ->select('results.*')
+            ->join('tournaments', 'results.tournament_id', '=', 'tournaments.id')
             ->with('tournament:id,title,event_date')
-            ->where('user_id', $request->user()->id)
-            ->orderByDesc('id')
+            ->where('results.user_id', $request->user()->id)
+            ->orderByDesc('tournaments.event_date')
+            ->orderByDesc('results.id')
             ->paginate(20);
 
         return view('results.index', compact('results'));

@@ -1,19 +1,19 @@
 <x-app-layout>
-    <div class="hub-page space-y-6">
+    <div class="hub-page max-w-7xl space-y-6">
         <div>
             <h1 class="hub-title">段位申請管理</h1>
-            <p class="hub-muted mt-1">未処理の承認・却下と、処理済み履歴を確認します。</p>
+            <p class="hub-muted mt-1">申請の承認・却下と処理状況を確認します。</p>
         </div>
 
-                @if (session('status'))
-                    <div class="hub-alert">{{ session('status') }}</div>
-                @endif
+        @if (session('status'))
+            <div class="hub-alert">{{ session('status') }}</div>
+        @endif
 
-                @if ($rankRequests->count() === 0)
-                    <div class="heian-card p-6 hub-muted">申請はありません。</div>
-                @else
-                    <div class="heian-card overflow-hidden">
-                        <div class="overflow-x-auto">
+        @if ($rankRequests->count() === 0)
+            <div class="heian-card p-6 hub-muted">申請はありません。</div>
+        @else
+            <div class="heian-card overflow-hidden">
+                <div class="overflow-x-auto">
                     <table class="hub-table">
                         <thead>
                             <tr>
@@ -58,20 +58,16 @@
                                         @endif
                                     </td>
 
-                                    <td>
-                                        {{ $r->handledByName() }}
-                                    </td>
+                                    <td>{{ $r->handledByName() }}</td>
 
-                                    <td class="font-mono">
-                                        {{ $r->displayDateYyMmDd() }}
-                                    </td>
+                                    <td class="font-mono">{{ $r->displayDateYyMmDd() }}</td>
 
                                     <td>
                                         @if ($r->status === \App\Models\RankRequest::STATUS_PENDING)
                                             <form method="POST" class="space-y-2">
                                                 @csrf
 
-                                                <textarea name="admin_comment" rows="2" class="w-72" placeholder="（任意）コメント">{{ old('admin_comment', '') }}</textarea>
+                                                <textarea name="admin_comment" rows="2" class="w-80" placeholder="（任意）コメント">{{ old('admin_comment', '') }}</textarea>
 
                                                 <div class="flex gap-2">
                                                     <button type="submit"
@@ -90,14 +86,13 @@
                                                 </div>
                                             </form>
                                         @else
-                                            <div class="text-gray-700 whitespace-pre-wrap">
-                                                {{ $r->admin_comment ?: '-' }}</div>
+                                            <div class="whitespace-pre-wrap text-gray-700">{{ $r->admin_comment ?: '-' }}</div>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($r->status === \App\Models\RankRequest::STATUS_PENDING)
-                                            <span class="hub-muted">操作は左で入力</span>
+                                            <span class="hub-muted">入力欄をご利用ください</span>
                                         @else
                                             <span class="hub-muted">処理済み</span>
                                         @endif
@@ -106,10 +101,10 @@
                             @endforeach
                         </tbody>
                     </table>
-                        </div>
-                    </div>
+                </div>
+            </div>
 
-                    <div>{{ $rankRequests->links() }}</div>
-                @endif
+            <div>{{ $rankRequests->links() }}</div>
+        @endif
     </div>
 </x-app-layout>

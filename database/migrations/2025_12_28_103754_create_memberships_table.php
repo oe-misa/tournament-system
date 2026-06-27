@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->date('start_date');
             $table->date('end_date');
 
-            // 更新履歴のメモ（決済IDなどを将来入れてもOK）
             $table->string('note')->nullable();
 
             $table->timestamps();

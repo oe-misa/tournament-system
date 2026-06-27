@@ -37,10 +37,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('rank_requests', function (Blueprint $table) {
-            // down は「存在するなら落とす」が丁寧だけど、hasColumn は Blueprint 内で使いにくいので安全策で固定
-            // プロジェクト方針で down を使わないならこのままでOKです。
-
-            // ここは必要なら手動で調整してください
         });
     }
 };

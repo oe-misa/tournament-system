@@ -149,7 +149,7 @@
 - `ResultController::index()`
   - ログインユーザーの成績一覧をページングして返す。
 - `RankRequestController::store()`
-  - `rank_id`、`note`、`comment` を validate する。
+  - `rank_id`、`note` を validate する。
   - `RankRequestService::request()` を呼ぶ。
   - `HttpException` は JSON `message` と HTTP status へ変換する。
 

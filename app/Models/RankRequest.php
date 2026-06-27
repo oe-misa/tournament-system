@@ -20,10 +20,8 @@ class RankRequest extends Model
         'requested_rank_id',
         'requested_level',
 
-        // 会員の備考
         'note',
 
-        // ★管理者コメント
         'admin_comment',
 
         'approved_by',

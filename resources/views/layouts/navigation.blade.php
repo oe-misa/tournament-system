@@ -28,10 +28,10 @@
                     会員情報
                 </x-nav-link>
                 <x-nav-link :href="route('tournaments.index')" :active="request()->routeIs('tournaments.*')">
-                    大会登録
+                    大会一覧
                 </x-nav-link>
                 <x-nav-link :href="route('results.index')" :active="request()->routeIs('results.*')">
-                    大会結果
+                    成績一覧
                 </x-nav-link>
                 <x-nav-link :href="route('membership.create')" :active="request()->routeIs('membership.*')">
                     年間登録
@@ -65,10 +65,10 @@
                 会員情報
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('tournaments.index')" :active="request()->routeIs('tournaments.*')">
-                大会登録
+                大会一覧
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('results.index')" :active="request()->routeIs('results.*')">
-                大会結果
+                成績一覧
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('membership.create')" :active="request()->routeIs('membership.*')">
                 年間登録

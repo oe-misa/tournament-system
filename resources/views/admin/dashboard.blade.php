@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="hub-page space-y-6">
+    <div class="hub-page max-w-6xl space-y-6">
         <div>
             <h1 class="hub-title">管理</h1>
             <p class="hub-muted mt-1">大会、成績、段位申請を運用します。</p>

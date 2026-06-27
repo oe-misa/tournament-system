@@ -20,7 +20,6 @@ class EntryController extends Controller
                 'entry' => $entry,
             ], 201);
         } catch (HttpException $e) {
-            // Serviceで投げた403/409/422などをAPIに反映
             return response()->json([
                 'message' => $e->getMessage(),
             ], $e->getStatusCode());

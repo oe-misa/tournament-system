@@ -13,9 +13,12 @@ class ResultController extends Controller
         $user = $request->user();
 
         $results = Result::query()
+            ->select('results.*')
+            ->join('tournaments', 'results.tournament_id', '=', 'tournaments.id')
             ->with('tournament:id,title,event_date')
-            ->where('user_id', $user->id)
-            ->orderByDesc('id')
+            ->where('results.user_id', $user->id)
+            ->orderByDesc('tournaments.event_date')
+            ->orderByDesc('results.id')
             ->paginate(20);
 
         return response()->json($results);

@@ -17,6 +17,5 @@ return new class extends Migration
 
     public function down(): void
     {
-        // 実運用では down を使わない前提（必要なら手動で drop）
     }
 };

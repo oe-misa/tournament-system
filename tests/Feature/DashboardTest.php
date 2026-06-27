@@ -15,7 +15,7 @@ it('shows dashboard for member with omikuji status', function () {
     $this->actingAs($user)
         ->get('/dashboard')
         ->assertOk()
-        ->assertSee('本日の御神籤');
+        ->assertSee('本日のおみくじ');
 
     $this->actingAs($user)->post('/omikuji/draw')->assertRedirect('/dashboard');
 

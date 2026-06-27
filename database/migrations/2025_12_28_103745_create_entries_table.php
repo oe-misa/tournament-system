@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tournament_id')->constrained()->cascadeOnDelete();
 
-            // entry / cancelled など（必要になったら追加）
             $table->string('status', 20)->default('entry');
 
             $table->timestamps();

@@ -24,7 +24,7 @@ class OmikujiController extends Controller
             ->first();
 
         if ($existing) {
-            return redirect()->route('dashboard')->with('status', '本日の御神籤は既に引いています');
+            return redirect()->route('dashboard')->with('status', '本日のおみくじは既に引いています');
         }
 
         try {
@@ -36,7 +36,7 @@ class OmikujiController extends Controller
                     ->first();
 
                 if ($locked) {
-                    throw new HttpException(409, '本日の御神籤は既に引いています');
+                    throw new HttpException(409, '本日のおみくじは既に引いています');
                 }
 
                 $result = self::RESULTS[array_rand(self::RESULTS)];
@@ -50,9 +50,9 @@ class OmikujiController extends Controller
         } catch (HttpException $e) {
             return redirect()->route('dashboard')->with('status', $e->getMessage());
         } catch (QueryException $e) {
-            return redirect()->route('dashboard')->with('status', '本日の御神籤は既に引いています');
+            return redirect()->route('dashboard')->with('status', '本日のおみくじは既に引いています');
         }
 
-        return redirect()->route('dashboard')->with('status', '本日の御神籤は「' . $draw->result . '」でした');
+        return redirect()->route('dashboard')->with('status', '本日のおみくじは「' . $draw->result . '」でした');
     }
 }

@@ -22,7 +22,7 @@ it('allows a user to draw omikuji once per day', function () {
     $this->actingAs($user)
         ->post('/omikuji/draw')
         ->assertRedirect('/dashboard')
-        ->assertSessionHas('status', '本日の御神籤は既に引いています');
+        ->assertSessionHas('status', '本日のおみくじは既に引いています');
 
     $this->assertDatabaseCount('omikuji_draws', 1);
 });
@@ -62,7 +62,7 @@ it('handles lock conflicts during transaction', function () {
     $this->actingAs($user)
         ->post('/omikuji/draw')
         ->assertRedirect('/dashboard')
-        ->assertSessionHas('status', '本日の御神籤は既に引いています');
+        ->assertSessionHas('status', '本日のおみくじは既に引いています');
 });
 
 it('handles draw conflicts gracefully', function () {
@@ -70,12 +70,12 @@ it('handles draw conflicts gracefully', function () {
 
     DB::shouldReceive('transaction')
         ->once()
-        ->andThrow(new HttpException(409, '本日の御神籤は既に引いています'));
+        ->andThrow(new HttpException(409, '本日のおみくじは既に引いています'));
 
     $this->actingAs($user)
         ->post('/omikuji/draw')
         ->assertRedirect('/dashboard')
-        ->assertSessionHas('status', '本日の御神籤は既に引いています');
+        ->assertSessionHas('status', '本日のおみくじは既に引いています');
 });
 
 it('handles database constraint errors gracefully', function () {
@@ -88,5 +88,5 @@ it('handles database constraint errors gracefully', function () {
     $this->actingAs($user)
         ->post('/omikuji/draw')
         ->assertRedirect('/dashboard')
-        ->assertSessionHas('status', '本日の御神籤は既に引いています');
+        ->assertSessionHas('status', '本日のおみくじは既に引いています');
 });

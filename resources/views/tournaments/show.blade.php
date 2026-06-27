@@ -42,7 +42,7 @@
 
             <form method="POST" action="{{ route('entries.store', $tournament) }}">
                 @csrf
-                <button class="heian-btn w-full sm:w-auto">参加登録</button>
+                <button class="heian-btn w-full sm:w-auto">エントリーする</button>
             </form>
         </div>
     </div>

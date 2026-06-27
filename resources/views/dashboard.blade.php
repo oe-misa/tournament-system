@@ -24,7 +24,7 @@
         <div class="heian-card p-5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <div class="font-semibold">本日の御神籤</div>
+                    <div class="font-semibold">本日のおみくじ</div>
                     @if ($todayOmikuji)
                         <div class="hub-muted mt-1 text-sm">結果: <span class="font-bold text-[#9f3b30]">{{ $todayOmikuji->result }}</span></div>
                     @else
@@ -37,7 +37,7 @@
                 @else
                     <form method="POST" action="{{ route('omikuji.draw') }}">
                         @csrf
-                        <button class="heian-btn">本日の御神籤を引く</button>
+                        <button class="heian-btn">おみくじを引く</button>
                     </form>
                 @endif
             </div>
@@ -57,8 +57,8 @@
             <a href="{{ route('tournaments.index') }}" class="hub-menu-card">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <div class="font-semibold">大会登録</div>
-                        <div class="hub-muted mt-2 text-sm">大会一覧とエントリー</div>
+                        <div class="font-semibold">大会一覧</div>
+                        <div class="hub-muted mt-2 text-sm">大会の確認とエントリー</div>
                     </div>
                     <span class="heian-pill">Entry</span>
                 </div>
@@ -67,7 +67,7 @@
             <a href="{{ route('results.index') }}" class="hub-menu-card">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <div class="font-semibold">大会結果</div>
+                        <div class="font-semibold">成績一覧</div>
                         <div class="hub-muted mt-2 text-sm">過去成績の確認</div>
                     </div>
                     <span class="heian-pill">Result</span>

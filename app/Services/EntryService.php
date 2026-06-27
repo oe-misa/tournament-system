@@ -64,9 +64,6 @@ class EntryService
         });
     }
 
-    /**
-     * エントリーをキャンセル（必要なら）
-     */
     public function cancel(User $user, Tournament $tournament): void
     {
         Entry::query()

@@ -304,13 +304,13 @@
     }
 
     .hub-page {
-        max-width: 72rem;
+        max-width: 80rem;
         margin: 0 auto;
         padding: 2rem 1rem;
     }
 
     .hub-page-narrow {
-        max-width: 48rem;
+        max-width: 56rem;
         margin: 0 auto;
         padding: 2rem 1rem;
     }
