@@ -77,6 +77,8 @@
 - 期限切れ会員および未登録会員は、現在年度分として更新する。
 - 期限切れ会員および未登録会員は、更新前に現在状態の確認を促す。
 - 同じ年度の更新が既に存在する場合、重複更新はできない。
+- 画面表示では `MembershipService::preview()` の結果を使って更新可否と対象期間を判断する。
+- 更新実行では `MembershipService::renew()` を使い、`memberships` の履歴作成と `users.membership_expires_at` の更新を同一トランザクションで行う。
 
 ### 大会
 
@@ -94,6 +96,10 @@
 - 定員が設定されていて満員の場合、エントリーできない。
 - 同一ユーザー・同一大会の重複エントリーは作成しない。
 - 既存エントリーがある場合は成功扱いで既存データを返す。
+- エントリー可否判定は `EntryService` に集約する。
+- 定員判定はトランザクション内で行い、同時エントリー時の取りこぼしを防ぐ。
+- エントリー登録は `entries` に `entry` 状態で保存する。
+- 既存エントリーがある場合は新規作成せず、そのまま返す。
 
 ### 成績
 
@@ -136,6 +142,8 @@
 - 同日に既に引いている場合、新しい結果は作成しない。
 - 結果はダッシュボードに表示する。
 - 結果のみ保存する。
+- 同日重複防止は `omikuji_draws.user_id + drawn_on` の一意制約を前提にする。
+- 既に引いている場合は、画面上は「本日は引きました」と扱う。
 
 ### API
 
@@ -147,6 +155,61 @@
   - 大会エントリー
   - 自分の成績一覧
   - 段位申請作成
+
+## 実装前提
+
+### Dashboard
+
+- 管理者の未処理件数は段位申請の `pending` 件数と、エントリー済みだが成績未入力の件数で構成する。
+
+### 大会エントリー
+
+- `EntryService::entry()` は年間登録、段位、締切、定員、重複を確認する。
+- 同一会員・同一大会の重複は、既存データを返すことで冪等に扱う。
+- 定員チェックは transaction と lock を併用する。
+
+### 段位申請
+
+- 申請時に `requested_rank_id`、`requested_level`、`note` を保存する。
+- `pending / approved / rejected` の3状態で管理する。
+- 承認時は `users.rank_id` を更新する。
+- 承認・却下時は `approved_by` / `rejected_by`、`approved_at` / `rejected_at`、`admin_comment` を保存する。
+
+### 年間登録
+
+- `users.membership_expires_at` が現在有効期限の真実となる。
+- `memberships` は更新履歴として残す。
+- 更新可能かどうかは 3/10 を境に判定する。
+
+### おみくじ
+
+- `omikuji_draws` は同一ユーザー・同一日で一意にする。
+- 同日重複は新規作成せず、既に引いた扱いで返す。
+
+### API
+
+- API は `auth:sanctum` 前提で利用する。
+- レスポンスは JSON とする。
+- 現行公開範囲は会員情報、大会一覧・詳細、大会エントリー、自分の成績一覧、段位申請作成までとする。
+
+## 主要データ
+
+- `users`
+  - `name`, `email`, `password`, `rank_id`, `membership_expires_at`, `is_admin`
+- `ranks`
+  - `kyu`, `dan`, `level`
+- `tournaments`
+  - `title`, `description`, `event_date`, `entry_deadline`, `capacity`, `min_rank_level`
+- `entries`
+  - `user_id`, `tournament_id`, `status`
+- `results`
+  - `user_id`, `tournament_id`, `placing`, `score`, `note`
+- `memberships`
+  - `user_id`, `start_date`, `end_date`, `note`
+- `rank_requests`
+  - `user_id`, `rank_id`, `requested_rank_id`, `requested_level`, `status`, `note`, `approved_by`, `approved_at`, `rejected_by`, `rejected_at`, `admin_comment`
+- `omikuji_draws`
+  - `user_id`, `result`, `drawn_on`
 
 ## 未定義・今後検討
 
