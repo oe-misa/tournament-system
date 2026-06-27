@@ -1,5 +1,11 @@
 # 01 Specification
 
+## 参照方針
+
+- 業務ルールと状態遷移は `docs/common/08_implementation_policy.md` を前提に記述する。
+- エラーの返し方は `docs/common/07_error_logging_policy.md` を前提に記述する。
+- フォルダ責務は `docs/common/06_project_structure.md` を前提に記述する。
+
 ## 目的
 
 大会情報の公開、会員のログイン、大会エントリー、成績閲覧、プロフィール管理、年間登録更新、段位申請、日次おみくじを一元化する。
@@ -150,4 +156,3 @@
 - 大会の公開状態管理。
 - 管理者による会員管理画面。
 - 操作監査ログの永続化。
-
