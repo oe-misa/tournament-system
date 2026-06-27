@@ -38,14 +38,14 @@
 - `store`
   - `EntryService::entry()` を呼ぶ。
   - `HttpException` は画面向けのエラーメッセージとして扱う。
-- `cancel`
-  - `EntryService::cancel()` を呼ぶ。
-  - 現行ではルート接続していないが、サービスとして実装済み。
+  - 成功時は大会詳細へ戻す。
+  - 失敗時は大会詳細へ戻し、`error` フラッシュを付ける。
 
 ### Web\ResultController
 
 - `index`
   - ログインユーザーの成績を大会情報付きで取得する。
+  - 変更操作は行わず、閲覧専用とする。
 
 ### Web\MembershipController
 
@@ -55,14 +55,17 @@
 - `store`
   - `MembershipService::renew()` を呼ぶ。
   - 失敗時は `HttpException` のメッセージを表示する。
+  - 成功時は `membership.create` に戻す。
 
 ### Web\RankRequestController
 
 - `create`
   - 現在段位と全段位を取得し、申請画面を表示する。
+  - `RankLabel` 変換に必要な `currentLevel` を渡す。
 - `store`
   - `requested_rank_id` と `note` を validate する。
   - `RankRequestService::request()` を呼ぶ。
+  - 失敗時は `requested_rank_id` のエラーとして画面へ戻す。
 - `history`
   - ログインユーザーの申請履歴を関連情報付きで取得する。
 
@@ -70,6 +73,7 @@
 
 - `show(Rank $rank)`
   - 段位レベル、段位ラベル、参加条件表示を JSON で返す。
+  - 画面遷移は持たず、プレビュー用途の API として扱う。
 
 ### Web\OmikujiController
 
@@ -77,10 +81,13 @@
   - 当日結果があれば新規作成しない。
   - トランザクションとロックで同日二重作成を抑止する。
   - DB 制約違反時も既に引いた扱いで返す。
+  - 成功時はダッシュボードへ戻し、当日の結果をフラッシュメッセージで通知する。
 
 ### Admin\AdminDashboardController
 
-- 管理者向け未処理件数を集計し、管理ダッシュボードを表示する。
+- `index`
+  - `pending` 段位申請数と、`entry` 状態で結果未入力の件数を集計する。
+  - `admin.dashboard` view を返す。
 
 ### Admin\AdminTournamentController
 
@@ -94,6 +101,16 @@
   - `min_rank_level`
 - `show`
   - 現行では編集画面へリダイレクトする。
+- `index`
+  - 大会を開催日降順でページングして返す。
+- `store`
+  - バリデーション後に `Tournament::create()` する。
+  - 成功時は編集画面へ遷移する。
+- `update`
+  - バリデーション後に既存大会を更新する。
+  - 成功時は編集画面へ遷移する。
+- `destroy`
+  - 大会を削除し、一覧へ戻す。
 
 ### Admin\AdminResultController
 
@@ -103,6 +120,7 @@
   - `results` 配列を validate する。
   - 空行は保存しない。
   - `Result::updateOrCreate()` で登録・更新する。
+  - トランザクション内で保存する。
 
 ### Admin\AdminRankRequestController
 
@@ -110,13 +128,30 @@
   - 全申請を関連情報付きで表示する。
 - `approve`
   - 管理者コメントを validate し、`RankRequestService::approve()` を呼ぶ。
+  - 処理後は同一一覧へ戻る。
 - `reject`
   - 管理者コメントを validate し、`RankRequestService::reject()` を呼ぶ。
+  - 処理後は同一一覧へ戻る。
 
 ### Api Controllers
 
-- Web と同じ Service を使える処理は Service を再利用する。
-- `HttpException` は JSON `message` と HTTP status へ変換する。
+- `MeController::show()`
+  - `users` と `rank` を JSON で返す。
+  - `membership_expires_at` と `is_admin` を含める。
+- `TournamentController::index()`
+  - 大会一覧をページングして返す。
+- `TournamentController::show()`
+  - 大会 1 件を JSON で返す。
+- `EntryController::store()`
+  - `EntryService::entry()` を呼ぶ。
+  - 成功時は `201` と `message`, `entry` を返す。
+  - `HttpException` は JSON `message` と HTTP status へ変換する。
+- `ResultController::index()`
+  - ログインユーザーの成績一覧をページングして返す。
+- `RankRequestController::store()`
+  - `rank_id`、`note`、`comment` を validate する。
+  - `RankRequestService::request()` を呼ぶ。
+  - `HttpException` は JSON `message` と HTTP status へ変換する。
 
 ## Service
 
@@ -132,6 +167,7 @@
 - `cancel(User $user, Tournament $tournament): void`
   - 指定会員・指定大会のエントリーを `cancelled` に更新する。
   - 現行ではルート接続していないが、サービスとして実装済み。
+  - ルート未接続のため、将来のキャンセル導線用の内部 API として扱う。
 
 ### MembershipService
 
@@ -149,6 +185,7 @@
   - 年度終了は翌 3/31。
   - 翌年度更新開始日は年度終了年の 3/10。
   - 期限切れ/未登録会員は当年度を対象とする。
+  - 同一年度が既に有効な場合は更新不可として返す。
 
 ### RankRequestService
 
@@ -156,14 +193,17 @@
   - 現在段位より下の申請を拒否する。
   - 未処理申請が既にある場合は拒否する。
   - `rank_requests` に `pending` で作成する。
+  - `requested_rank_id` と `requested_level` を保存する。
 - `approve(User $admin, RankRequest $request, ?string $comment = null): RankRequest`
   - 管理者以外を拒否する。
   - pending 以外を拒否する。
   - トランザクション内でユーザー段位と申請ステータスを更新する。
+  - `approved_by`, `approved_at`, `admin_comment` を保存する。
 - `reject(User $admin, RankRequest $request, ?string $comment = null): RankRequest`
   - 管理者以外を拒否する。
   - pending 以外を拒否する。
   - 却下情報を保存する。
+  - `rejected_by`, `rejected_at`, `admin_comment` を保存する。
 
 ## Model
 
@@ -191,23 +231,28 @@
 - 会員の大会エントリー。
 - `user`, `tournament` に属する。
 - `status` は `entry` / `cancelled` を想定するが、現行運用では `entry` が中心。
+- `user_id + tournament_id` の一意制約で重複を防ぐ。
 
 ### Result
 
 - 大会成績。
 - `user`, `tournament` に属する。
+- `placing`, `score`, `note` を扱う。
+- `user_id + tournament_id` の一意制約で 1 件にする。
 
 ### Membership
 
 - 年間登録履歴。
 - `start_date`, `end_date` は `date` cast。
 - `note` は任意の補足情報。
+- `user_id + end_date` の index を持つ。
 
 ### RankRequest
 
 - 段位申請。
 - `pending` / `approved` / `rejected` を扱う。
 - `user`, `rank`, `requestedRank`, `approver`, `rejector` を持つ。
+- `requested_at`, `approved_at`, `rejected_at`, `admin_comment` を持つ。
 - 表示補助:
   - `statusLabel()`
   - `handledByName()`
@@ -217,6 +262,7 @@
 
 - 会員の日次おみくじ結果。
 - 同一ユーザー・同一日付の重複作成を防ぐ。
+- `user_id + drawn_on` の一意制約を前提にする。
 
 ## Support
 
