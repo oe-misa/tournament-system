@@ -3,6 +3,7 @@
 ## 参照方針
 
 - 業務ルールと状態遷移は `docs/common/08_implementation_policy.md` を前提に記述する。
+- 書式と粒度は `docs/common/09_spec_document_standards.md` を前提に記述する。
 - エラーの返し方は `docs/common/07_error_logging_policy.md` を前提に記述する。
 - フォルダ責務は `docs/common/06_project_structure.md` を前提に記述する。
 
