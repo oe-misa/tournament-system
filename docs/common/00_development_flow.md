@@ -4,6 +4,13 @@
 
 このドキュメントは、今後の開発を `Requirements.md` 起点で進めるための共通フローを定義する。
 
+## 標準配置
+
+- `Requirements.md` は各プロジェクトの `docs/requirements.md` に置く。
+- `SPECIFICATION.md` は `docs/spec-driven/01_specification.md` として置く。
+- 基本設計は `docs/spec-driven/02_basic_design.md` に置く。
+- 詳細設計は `docs/spec-driven/03_detailed_design.md` に置く。
+
 開発は次の順で進める。
 
 1. `Requirements.md` を作成する
@@ -102,6 +109,6 @@
 - `docs/spec-driven/03_detailed_design.md`
 - `docs/spec-driven/04_test_specification.md`
 - `docs/spec-driven/05_development_tasks.md`
+- `docs/requirements.md`
 - `docs/common/06_project_structure.md`
 - `docs/common/07_error_logging_policy.md`
-
