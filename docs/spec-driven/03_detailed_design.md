@@ -31,6 +31,9 @@
 - `store`
   - `EntryService::entry()` を呼ぶ。
   - `HttpException` は画面向けのエラーメッセージとして扱う。
+- `cancel`
+  - `EntryService::cancel()` を呼ぶ。
+  - 現行ではルート接続していないが、サービスとして実装済み。
 
 ### Web\ResultController
 
@@ -82,6 +85,8 @@
   - `entry_deadline`
   - `capacity`
   - `min_rank_level`
+- `show`
+  - 現行では編集画面へリダイレクトする。
 
 ### Admin\AdminResultController
 
@@ -115,7 +120,11 @@
   - ユーザー段位と大会最低段位を比較する。
   - エントリー締切を確認する。
   - トランザクション内で定員と重複を確認する。
+  - 既存エントリーがある場合はそのまま返す。
   - 登録可能なら `Entry` を作成する。
+- `cancel(User $user, Tournament $tournament): void`
+  - 指定会員・指定大会のエントリーを `cancelled` に更新する。
+  - 現行ではルート接続していないが、サービスとして実装済み。
 
 ### MembershipService
 
@@ -210,4 +219,3 @@
   - 段位レベルを段位/級ラベルへ変換する。
 - `eligibleKyus(int $minLevel): string`
   - 大会参加条件表示へ変換する。
-
