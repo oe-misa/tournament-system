@@ -14,6 +14,7 @@
                             <th>開催日</th>
                             <th>順位</th>
                             <th>スコア</th>
+                            <th>備考</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,10 +24,11 @@
                                 <td>{{ optional($r->tournament?->event_date)->format('Y-m-d') ?? '-' }}</td>
                                 <td>{{ $r->placing ?? '-' }}</td>
                                 <td>{{ $r->score ?? '-' }}</td>
+                                <td class="whitespace-pre-wrap">{{ $r->note ?: '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td class="hub-muted py-6" colspan="4">まだ成績がありません。</td>
+                                <td class="hub-muted py-6" colspan="5">まだ成績がありません。</td>
                             </tr>
                         @endforelse
                     </tbody>
