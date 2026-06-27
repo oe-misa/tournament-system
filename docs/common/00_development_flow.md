@@ -112,3 +112,4 @@
 - `docs/requirements.md`
 - `docs/common/06_project_structure.md`
 - `docs/common/07_error_logging_policy.md`
+- `docs/common/08_implementation_policy.md`
