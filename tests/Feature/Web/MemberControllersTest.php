@@ -69,7 +69,7 @@ it('handles membership pages', function () {
 
     $this->actingAs($user)->get('/membership/renew')->assertOk();
     $this->actingAs($user)
-        ->post('/membership/renew', ['years' => 1])
+        ->post('/membership/renew')
         ->assertRedirect('/membership/renew');
 });
 
@@ -77,14 +77,14 @@ it('handles membership service errors', function () {
     $user = User::factory()->create();
 
     app()->instance(\App\Services\MembershipService::class, new class extends \App\Services\MembershipService {
-        public function renew(\App\Models\User $user, int $years = 1, ?string $note = null): \App\Models\User
+        public function renew(\App\Models\User $user, ?string $note = null): \App\Models\User
         {
             throw new \Symfony\Component\HttpKernel\Exception\HttpException(403, 'error');
         }
     });
 
     $this->actingAs($user)
-        ->post('/membership/renew', ['years' => 1])
+        ->post('/membership/renew')
         ->assertRedirect('/membership/renew')
         ->assertSessionHas('error', 'error');
 });

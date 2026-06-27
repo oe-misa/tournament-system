@@ -1,29 +1,31 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">大会一覧</h2>
-    </x-slot>
-
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="heian-card p-6">
-                <ul class="space-y-3">
-                    @foreach ($tournaments as $t)
-                        <li class="border-b pb-3">
-                            <div class="font-bold">
-                                <a class="heian-link"
-                                    href="{{ route('tournaments.show', $t) }}">{{ $t->title }}</a>
-                            </div>
-                            <div class="text-sm text-gray-600">開催日: {{ $t->event_date->format('Y-m-d') }}</div>
-                            <div class="text-sm text-gray-600">
-                                参加条件: {{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}
-                            </div>
-
-                        </li>
-                    @endforeach
-                </ul>
-
-                <div class="mt-4">{{ $tournaments->links() }}</div>
-            </div>
+    <div class="hub-page space-y-6">
+        <div>
+            <h1 class="hub-title">大会登録</h1>
+            <p class="hub-muted mt-1">参加できる大会の一覧です。</p>
         </div>
+
+        @if ($tournaments->count() === 0)
+            <div class="heian-card p-6 hub-muted">現在表示できる大会はありません。</div>
+        @else
+            <div class="grid gap-4 md:grid-cols-2">
+                @foreach ($tournaments as $t)
+                    <a href="{{ route('tournaments.show', $t) }}" class="hub-menu-card">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h2 class="text-lg font-semibold">{{ $t->title }}</h2>
+                                <div class="hub-muted mt-2 text-sm">日程: {{ $t->event_date->format('Y-m-d') }}</div>
+                            </div>
+                            <span class="heian-pill">{{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}</span>
+                        </div>
+                        @if ($t->description)
+                            <p class="hub-muted mt-3 text-sm">{{ \Illuminate\Support\Str::limit($t->description, 140) }}</p>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+
+            <div>{{ $tournaments->links() }}</div>
+        @endif
     </div>
 </x-app-layout>

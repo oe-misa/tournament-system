@@ -1,21 +1,20 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">プロフィール</h2>
-    </x-slot>
-
     @php
         $rankLevel = (int) ($user->rank?->level ?? 0);
     @endphp
 
-    <div class="py-6">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="hub-page-narrow space-y-6">
+        <div>
+            <h1 class="hub-title">会員情報</h1>
+            <p class="hub-muted mt-1">プロフィール、段位、年間登録の状態を確認できます。</p>
+        </div>
 
             @if (session('status'))
-                <div class="p-3 bg-green-100 rounded">{{ session('status') }}</div>
+                <div class="hub-alert">{{ session('status') }}</div>
             @endif
 
             @if ($errors->any())
-                <div class="p-3 bg-red-100 rounded">
+                <div class="hub-alert-danger">
                     <div class="font-semibold mb-2">入力内容にエラーがあります</div>
                     <ul class="list-disc pl-5">
                         @foreach ($errors->all() as $e)
@@ -27,7 +26,7 @@
 
             {{-- 現在情報 --}}
             <div class="heian-card p-6 space-y-3">
-                <div class="text-lg font-bold">現在の情報</div>
+                <div class="text-lg font-bold">登録状況</div>
 
                 <div class="text-sm text-gray-700">
                     段位：
@@ -60,13 +59,13 @@
 
                     <div>
                         <label class="block text-sm font-medium">氏名</label>
-                        <input name="name" class="mt-1 w-full border-gray-300 rounded"
+                        <input name="name" class="mt-1 w-full"
                             value="{{ old('name', $user->name) }}" required>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium">メールアドレス</label>
-                        <input name="email" type="email" class="mt-1 w-full border-gray-300 rounded"
+                        <input name="email" type="email" class="mt-1 w-full"
                             value="{{ old('email', $user->email) }}" required>
                     </div>
 
@@ -75,12 +74,12 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                             <div>
                                 <label class="block text-sm font-medium">新しいパスワード</label>
-                                <input name="password" type="password" class="mt-1 w-full border-gray-300 rounded">
+                                <input name="password" type="password" class="mt-1 w-full">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium">新しいパスワード（確認）</label>
                                 <input name="password_confirmation" type="password"
-                                    class="mt-1 w-full border-gray-300 rounded">
+                                    class="mt-1 w-full">
                             </div>
                         </div>
                         <div class="text-xs text-gray-500 mt-2">
@@ -89,7 +88,7 @@
                     </div>
 
                     <div class="flex justify-end gap-2">
-                        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded border">ダッシュボードへ</a>
+                        <a href="{{ route('dashboard') }}" class="heian-btn-secondary">ホームへ</a>
                         <button class="heian-btn">更新する</button>
                     </div>
                 </form>
@@ -109,7 +108,7 @@
 
                     <div>
                         <label class="block text-sm font-medium">現在のパスワード</label>
-                        <input name="password" type="password" class="mt-1 w-full border-gray-300 rounded" required>
+                        <input name="password" type="password" class="mt-1 w-full" required>
                     </div>
 
                     <button class="heian-btn-danger"
@@ -118,7 +117,5 @@
                     </button>
                 </form>
             </div>
-
-        </div>
     </div>
 </x-app-layout>

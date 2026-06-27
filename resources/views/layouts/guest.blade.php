@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=kaisei-decol:400,500,700|zen-maru-gothic:400,500,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=kaisei-decol:400,500,700|shippori-mincho:400,500,700|zen-maru-gothic:400,500,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

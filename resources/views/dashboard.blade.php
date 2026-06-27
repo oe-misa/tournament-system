@@ -1,105 +1,129 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">ダッシュボード</h2>
-    </x-slot>
+    <div class="hub-page space-y-6">
+        <div>
+            <h1 class="hub-title">こんにちは、{{ $user->name ?: '会員' }} 様</h1>
+            <p class="hub-muted mt-1">
+                段位: {{ \App\Support\RankLabel::labelByLevel((int) ($user->rank?->level ?? 0)) }}
+                <span class="mx-2">/</span>
+                年間登録: {{ $user->membership_expires_at ? $user->membership_expires_at->format('Y-m-d') . 'まで' : '未登録' }}
+            </p>
+        </div>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        @if (session('status'))
+            <div class="hub-alert">{{ session('status') }}</div>
+        @endif
 
-            @if (session('status'))
-                <div class="bg-green-100 p-3 rounded">{{ session('status') }}</div>
-            @endif
+        @if (!$user->membership_expires_at || $user->membership_expires_at->isPast())
+            <div class="hub-alert-danger">
+                <div class="font-semibold">年間登録が未登録、または期限切れです。</div>
+                <div class="mt-1 text-sm">大会へのエントリーには有効な年間登録が必要です。</div>
+                <a href="{{ route('membership.create') }}" class="mt-3 inline-block text-sm font-semibold text-[#9f3b30]">年間登録ページへ</a>
+            </div>
+        @endif
 
-            {{-- 会員メニュー --}}
-            <div class="heian-card p-6 space-y-4">
-                <div class="text-lg font-bold">メニュー</div>
-
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-[#dbcbb0] rounded-lg p-4 bg-[rgba(246,240,227,0.6)]">
-                    <div>
-                        <div class="font-semibold">本日の御神籤</div>
-                        @if ($todayOmikuji)
-                            <div class="text-sm heian-text-muted mt-1">結果: <span class="font-bold text-[#c1483c]">{{ $todayOmikuji->result }}</span></div>
-                        @else
-                            <div class="text-sm heian-text-muted mt-1">1日1回だけ引けます</div>
-                        @endif
-                    </div>
-
+        <div class="heian-card p-5">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div class="font-semibold">本日の御神籤</div>
                     @if ($todayOmikuji)
-                        <button class="heian-btn-secondary" disabled>本日は引きました</button>
+                        <div class="hub-muted mt-1 text-sm">結果: <span class="font-bold text-[#9f3b30]">{{ $todayOmikuji->result }}</span></div>
                     @else
-                        <form method="POST" action="{{ route('omikuji.draw') }}">
-                            @csrf
-                            <button class="heian-btn">本日の御神籤を引く</button>
-                        </form>
+                        <div class="hub-muted mt-1 text-sm">1日1回だけ引けます。</div>
                     @endif
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <a href="{{ route('tournaments.index') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">大会</div>
-                        <div class="text-sm text-gray-600 mt-1">大会一覧・詳細・エントリー</div>
-                    </a>
+                @if ($todayOmikuji)
+                    <button class="heian-btn-secondary" disabled>本日は引きました</button>
+                @else
+                    <form method="POST" action="{{ route('omikuji.draw') }}">
+                        @csrf
+                        <button class="heian-btn">本日の御神籤を引く</button>
+                    </form>
+                @endif
+            </div>
+        </div>
 
-                    <a href="{{ route('results.index') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">成績</div>
-                        <div class="text-sm text-gray-600 mt-1">過去成績の確認</div>
-                    </a>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <a href="{{ route('profile.edit') }}" class="hub-menu-card">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold">会員情報</div>
+                        <div class="hub-muted mt-2 text-sm">プロフィールと登録状況</div>
+                    </div>
+                    <span class="heian-pill">Profile</span>
+                </div>
+            </a>
 
-                    <a href="{{ route('rank_requests.create') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">段位申請</div>
-                        <div class="text-sm text-gray-600 mt-1">段位の申請を行う</div>
-                    </a>
+            <a href="{{ route('tournaments.index') }}" class="hub-menu-card">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold">大会登録</div>
+                        <div class="hub-muted mt-2 text-sm">大会一覧とエントリー</div>
+                    </div>
+                    <span class="heian-pill">Entry</span>
+                </div>
+            </a>
 
-                    <a href="{{ route('rank_requests.history') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">段位申請履歴</div>
-                        <div class="text-sm text-gray-600 mt-1">申請状況・承認/却下・コメント確認</div>
-                    </a>
+            <a href="{{ route('results.index') }}" class="hub-menu-card">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold">大会結果</div>
+                        <div class="hub-muted mt-2 text-sm">過去成績の確認</div>
+                    </div>
+                    <span class="heian-pill">Result</span>
+                </div>
+            </a>
 
-                    <a href="{{ route('membership.create') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">年間登録更新</div>
-                        <div class="text-sm text-gray-600 mt-1">登録期限の更新</div>
-                    </a>
+            <a href="{{ route('membership.create') }}" class="hub-menu-card">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold">年間登録</div>
+                        <div class="hub-muted mt-2 text-sm">登録期限の更新</div>
+                    </div>
+                    <span class="heian-pill">{{ $user->membership_expires_at && !$user->membership_expires_at->isPast() ? '有効' : '要更新' }}</span>
+                </div>
+            </a>
+        </div>
 
-                    <a href="{{ route('profile.edit') }}" class="block p-4 rounded border hover:bg-gray-50">
-                        <div class="font-semibold">プロフィール</div>
-                        <div class="text-sm text-gray-600 mt-1">基本情報の変更</div>
+        <div class="grid gap-4 md:grid-cols-2">
+            <a href="{{ route('rank_requests.create') }}" class="hub-menu-card">
+                <div class="font-semibold">段位申請</div>
+                <div class="hub-muted mt-2 text-sm">現在の段位以上への申請を行います。</div>
+            </a>
+            <a href="{{ route('rank_requests.history') }}" class="hub-menu-card">
+                <div class="font-semibold">段位申請履歴</div>
+                <div class="hub-muted mt-2 text-sm">申請状況、担当者、管理者コメントを確認します。</div>
+            </a>
+        </div>
+
+        @if ($user->is_admin)
+            <div class="heian-card p-5">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <div>
+                        <h2 class="font-display text-xl font-bold">管理</h2>
+                        <p class="hub-muted mt-1 text-sm">大会、成績、段位申請の運用メニュー</p>
+                    </div>
+                    <a href="{{ route('admin.dashboard') }}" class="heian-btn-secondary">管理画面へ</a>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <a href="{{ route('admin.rank_requests.index') }}" class="hub-menu-card">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="font-semibold">段位申請管理</span>
+                            @if (($pendingRankRequestsCount ?? 0) > 0)
+                                <span class="heian-pill">未処理 {{ $pendingRankRequestsCount }}</span>
+                            @endif
+                        </div>
+                    </a>
+                    <a href="{{ route('admin.tournaments.index') }}" class="hub-menu-card">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="font-semibold">大会管理</span>
+                            @if (($missingResultsCount ?? 0) > 0)
+                                <span class="heian-pill">成績未入力 {{ $missingResultsCount }}</span>
+                            @endif
+                        </div>
                     </a>
                 </div>
             </div>
-
-            {{-- 管理者メニュー（管理者だけ） --}}
-            @if (auth()->user()?->is_admin)
-                <div class="heian-card p-6 space-y-4 border-l-4 border-[#b08b3a]">
-                    <div class="text-lg font-bold text-[#6b4f2b]">管理者メニュー</div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <a href="{{ route('admin.rank_requests.index') }}"
-                            class="block p-4 rounded border hover:bg-gray-50">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold">段位申請管理</span>
-                                @if (($pendingRankRequestsCount ?? 0) > 0)
-                                    <span class="px-2 py-1 text-xs rounded-full bg-[#c1483c] text-white">
-                                        未処理 {{ $pendingRankRequestsCount }}
-                                    </span>
-                                @endif
-                            </div>
-                        </a>
-
-                        <a href="{{ route('admin.tournaments.index') }}"
-                            class="block p-4 rounded border hover:bg-gray-50">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold">大会管理</span>
-                                @if (($missingResultsCount ?? 0) > 0)
-                                    <span class="px-2 py-1 text-xs rounded-full bg-[#b08b3a] text-white">
-                                        成績未入力 {{ $missingResultsCount }}
-                                    </span>
-                                @endif
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            @endif
-
-        </div>
+        @endif
     </div>
 </x-app-layout>

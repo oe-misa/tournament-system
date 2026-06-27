@@ -1,15 +1,15 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">段位申請</h2>
-    </x-slot>
+    <div class="hub-page-narrow space-y-6">
+        <div>
+            <h1 class="hub-title">段位申請</h1>
+            <p class="hub-muted mt-1">現在の段位以上の申請を受け付けます。</p>
+        </div>
 
-    <div class="py-6">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="heian-card p-6 space-y-4">
+        <div class="heian-card p-6 space-y-5">
 
                 {{-- エラー表示 --}}
                 @if ($errors->any())
-                    <div class="p-3 bg-red-100 rounded">
+                    <div class="hub-alert-danger">
                         <ul class="list-disc pl-5">
                             @foreach ($errors->all() as $e)
                                 <li>{{ $e }}</li>
@@ -18,22 +18,19 @@
                     </div>
                 @endif
 
-                <div class="p-3 bg-gray-50 border rounded text-sm text-gray-700">
-                    現在の段位：
-                    <span class="font-semibold">{{ \App\Support\RankLabel::labelByLevel((int) $currentLevel) }}</span>
-                    <div class="text-xs text-gray-500 mt-1">
-                        ※ 申請できるのは「現在の段位以上」です（現在より下は選択できません）
-                    </div>
+                <div class="rounded-md border border-[#e6ded2] bg-[#faf7f1] p-4 text-sm">
+                    <div class="hub-muted font-semibold">現在の段位</div>
+                    <div class="mt-1 text-lg font-bold">{{ \App\Support\RankLabel::labelByLevel((int) $currentLevel) }}</div>
                 </div>
 
                 {{-- 選択プレビュー（定義から取得して表示） --}}
                 <div id="rankPreview"
-                    class="p-3 bg-[rgba(62,91,71,0.12)] border border-[rgba(62,91,71,0.35)] rounded text-sm text-[#2b2a27] hidden">
+                    class="hidden rounded-md border border-[#e6ded2] bg-[#faf7f1] p-4 text-sm text-[#34251f]">
                     <div class="font-semibold">申請内容プレビュー</div>
                     <div class="mt-1">
                         申請段位：<span id="previewLabel" class="font-bold"></span>
                     </div>
-                    <div class="mt-1 text-xs text-[#3e5b47]">
+                    <div class="hub-muted mt-1 text-xs">
                         参加条件表示例：<span id="previewEligible"></span>
                     </div>
                 </div>
@@ -42,10 +39,10 @@
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">申請する段位（選択）</label>
+                        <label class="block text-sm font-medium">申請する段位</label>
 
                         <select id="requested_rank_id" name="requested_rank_id"
-                            class="mt-1 w-full border-gray-300 rounded" required>
+                            class="mt-1 w-full" required>
                             <option value="">-- 選択してください --</option>
 
                             @foreach ($ranks as $rank)
@@ -63,14 +60,14 @@
                             @endforeach
                         </select>
 
-                        <div class="text-xs text-gray-500 mt-1">
-                            ※ 選択すると段位の定義を取得し、プレビューに反映します
+                        <div class="hub-muted mt-1 text-xs">
+                            選択すると段位の定義を取得し、プレビューに反映します。
                         </div>
                     </div>
 
-                    <div class="border-t pt-4">
-                        <label class="block text-sm font-medium text-gray-700">備考（任意）</label>
-                        <textarea name="note" rows="4" class="mt-1 w-full border-gray-300 rounded">{{ old('note') }}</textarea>
+                    <div>
+                        <label class="block text-sm font-medium">備考（任意）</label>
+                        <textarea name="note" rows="4" class="mt-1 w-full">{{ old('note') }}</textarea>
                     </div>
 
                     <div class="flex justify-end gap-2">
@@ -79,7 +76,6 @@
                     </div>
                 </form>
 
-            </div>
         </div>
     </div>
 

@@ -4,16 +4,17 @@
 
 @layer base {
     :root {
-        --heian-ink: #2b2a27;
-        --heian-ink-muted: #6b645e;
-        --heian-paper: #f6f0e3;
-        --heian-paper-deep: #efe4d1;
-        --heian-border: #dbcbb0;
-        --heian-vermillion: #c1483c;
-        --heian-moss: #3e5b47;
-        --heian-gold: #b08b3a;
-        --heian-shadow: 0 10px 30px rgba(52, 39, 24, 0.14);
-        --heian-shadow-soft: 0 6px 18px rgba(52, 39, 24, 0.1);
+        --heian-ink: #34251f;
+        --heian-ink-muted: #776b64;
+        --heian-paper: #ffffff;
+        --heian-paper-deep: #f4efe6;
+        --heian-border: #e6ded2;
+        --heian-vermillion: #9f3b30;
+        --heian-moss: #6f3a2d;
+        --heian-gold: #c39038;
+        --heian-background: #fbf8f1;
+        --heian-shadow: 0 14px 35px rgba(54, 38, 29, 0.1);
+        --heian-shadow-soft: 0 5px 18px rgba(54, 38, 29, 0.07);
     }
 
     html {
@@ -22,17 +23,15 @@
     }
 
     body {
-        background:
-            radial-gradient(1200px 600px at 10% -10%, rgba(176, 139, 58, 0.18), transparent 60%),
-            radial-gradient(900px 500px at 90% 0%, rgba(193, 72, 60, 0.16), transparent 55%),
-            linear-gradient(180deg, #f8f3ea 0%, #f2e7d6 100%);
+        background: var(--heian-background);
         color: var(--heian-ink);
         min-height: 100vh;
+        font-feature-settings: "palt";
     }
 
     h1, h2, h3, h4 {
-        font-family: "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif;
-        letter-spacing: 0.02em;
+        font-family: "Shippori Mincho", "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif;
+        letter-spacing: 0;
     }
 
     a {
@@ -46,10 +45,10 @@
     input,
     select,
     textarea {
-        background-color: rgba(246, 240, 227, 0.9);
+        background-color: #fff;
         border: 1px solid var(--heian-border);
         color: var(--heian-ink);
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         padding: 0.55rem 0.75rem;
     }
 
@@ -64,27 +63,24 @@
 
 @layer components {
     .heian-shell {
-        background:
-            linear-gradient(90deg, rgba(219, 203, 176, 0.12), transparent 30%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+        background: var(--heian-background);
     }
 
     .heian-nav {
-        background: rgba(246, 240, 227, 0.92);
-        border-bottom: 1px solid rgba(219, 203, 176, 0.7);
-        backdrop-filter: blur(8px);
+        background: var(--heian-paper);
+        border-bottom: 1px solid var(--heian-border);
     }
 
     .heian-header {
-        background: rgba(246, 240, 227, 0.85);
-        border-bottom: 1px solid rgba(219, 203, 176, 0.7);
-        box-shadow: var(--heian-shadow-soft);
+        background: transparent;
+        border-bottom: 0;
+        box-shadow: none;
     }
 
     .heian-card {
         background: var(--heian-paper);
-        border: 1px solid rgba(219, 203, 176, 0.9);
-        border-radius: 1rem;
+        border: 1px solid var(--heian-border);
+        border-radius: 0.5rem;
         box-shadow: var(--heian-shadow-soft);
         position: relative;
         overflow: hidden;
@@ -92,14 +88,7 @@
     }
 
     .heian-card::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-            radial-gradient(400px 200px at 80% -10%, rgba(176, 139, 58, 0.14), transparent 60%),
-            radial-gradient(500px 220px at -10% 0%, rgba(62, 91, 71, 0.12), transparent 60%);
-        pointer-events: none;
-        opacity: 0.6;
+        content: none;
     }
 
     .heian-card > * {
@@ -108,9 +97,9 @@
     }
 
     .heian-pill {
-        background: rgba(62, 91, 71, 0.12);
+        background: #f5eee7;
         color: var(--heian-moss);
-        border: 1px solid rgba(62, 91, 71, 0.35);
+        border: 1px solid #e7d8cc;
         border-radius: 999px;
         padding: 0.2rem 0.6rem;
         font-size: 0.75rem;
@@ -118,14 +107,16 @@
     }
 
     .heian-btn {
-        background: linear-gradient(135deg, #c1483c, #a63b30);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--heian-vermillion);
         color: #fff;
-        border: 1px solid rgba(130, 39, 31, 0.5);
-        border-radius: 999px;
-        padding: 0.6rem 1.2rem;
+        border: 1px solid var(--heian-vermillion);
+        border-radius: 0.5rem;
+        padding: 0.55rem 1rem;
         font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
         box-shadow: var(--heian-shadow-soft);
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
@@ -136,13 +127,16 @@
     }
 
     .heian-btn-secondary {
-        background: rgba(246, 240, 227, 0.9);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
         color: var(--heian-ink);
-        border: 1px solid rgba(176, 139, 58, 0.45);
-        border-radius: 999px;
-        padding: 0.6rem 1.2rem;
+        border: 1px solid var(--heian-border);
+        border-radius: 0.5rem;
+        padding: 0.55rem 1rem;
         font-weight: 600;
-        letter-spacing: 0.04em;
+        letter-spacing: 0;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -152,20 +146,22 @@
     }
 
     .heian-btn-danger {
-        background: linear-gradient(135deg, #7c2a2a, #5e2020);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #b42318;
         color: #fff;
-        border-radius: 999px;
-        padding: 0.6rem 1.2rem;
+        border-radius: 0.5rem;
+        padding: 0.55rem 1rem;
         font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        letter-spacing: 0;
     }
 
     .heian-link {
         color: var(--heian-moss);
-        text-decoration: underline;
-        text-underline-offset: 4px;
+        text-decoration: none;
         transition: color 0.15s ease;
+        font-weight: 600;
     }
 
     .heian-link:hover {
@@ -306,9 +302,89 @@
         color: #e34a6f;
         font-weight: 700;
     }
+
+    .hub-page {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .hub-page-narrow {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .hub-title {
+        font-family: "Shippori Mincho", "Kaisei Decol", "Yu Mincho", serif;
+        color: var(--heian-ink);
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+        font-weight: 700;
+    }
+
+    .hub-muted {
+        color: var(--heian-ink-muted);
+    }
+
+    .hub-alert {
+        border: 1px solid #d7ecd9;
+        background: #f1fbf2;
+        color: #245b2b;
+        border-radius: 0.5rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .hub-alert-danger {
+        border-color: #f1c7c1;
+        background: #fff4f2;
+        color: #9f2f24;
+    }
+
+    .hub-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+    }
+
+    .hub-table th {
+        color: var(--heian-ink-muted);
+        font-weight: 700;
+        text-align: left;
+        padding: 0.75rem 0.9rem;
+        border-bottom: 1px solid var(--heian-border);
+        background: #faf7f1;
+    }
+
+    .hub-table td {
+        padding: 0.8rem 0.9rem;
+        border-bottom: 1px solid var(--heian-border);
+        vertical-align: top;
+    }
+
+    .hub-menu-card {
+        display: block;
+        height: 100%;
+        border: 1px solid var(--heian-border);
+        border-radius: 0.5rem;
+        background: #fff;
+        padding: 1rem;
+        transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .hub-menu-card:hover {
+        border-color: var(--heian-vermillion);
+        transform: translateY(-1px);
+        box-shadow: var(--heian-shadow-soft);
+    }
 }
 
 @layer utilities {
+    .font-display {
+        font-family: "Shippori Mincho", "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif;
+    }
+
     .heian-text-muted {
         color: var(--heian-ink-muted);
     }

@@ -8,7 +8,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=kaisei-decol:400,500,700|zen-maru-gothic:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=kaisei-decol:400,500,700|shippori-mincho:400,500,700|zen-maru-gothic:400,500,700&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -19,16 +19,10 @@
 
         @isset($header)
             <header class="heian-header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                <div class="max-w-6xl mx-auto pt-8 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     <div>
                         {{ $header }}
                     </div>
-
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="text-sm heian-link">
-                            ダッシュボードへ
-                        </a>
-                    @endauth
                 </div>
             </header>
         @endisset
