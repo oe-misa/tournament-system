@@ -78,20 +78,31 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-end gap-2">
+                        <a href="{{ route('admin.tournaments.index') }}" class="heian-btn-secondary">戻る</a>
+                        <button class="heian-btn">更新</button>
+                    </div>
+                </form>
+
+                <div class="border-t border-[#e6ded2] pt-5">
+                    <div class="rounded-md border border-[#e6ded2] bg-[#faf7f1] p-4 space-y-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-[#2f2a25]">削除</h3>
+                            <p class="hub-muted text-sm mt-1">
+                                削除すると大会情報と関連データの参照ができなくなります。必要な場合のみ実行してください。
+                            </p>
+                        </div>
+
                         <form method="POST" action="{{ route('admin.tournaments.destroy', $tournament) }}">
                             @csrf
                             @method('DELETE')
                             <button class="heian-btn-danger"
-                                onclick="return confirm('削除しますか？')">削除</button>
+                                onclick="return confirm('この大会を削除しますか？ この操作は取り消せません。')">
+                                大会を削除
+                            </button>
                         </form>
-
-                        <div class="flex gap-2">
-                            <a href="{{ route('admin.tournaments.index') }}" class="heian-btn-secondary">戻る</a>
-                            <button class="heian-btn">更新</button>
-                        </div>
                     </div>
-                </form>
+                </div>
 
                 <div class="border-t border-[#e6ded2] pt-6 space-y-4">
                     <div>
