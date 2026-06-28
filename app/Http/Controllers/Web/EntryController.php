@@ -19,4 +19,25 @@ class EntryController extends Controller
             return redirect()->route('tournaments.show', $tournament)->with('error', $e->getMessage());
         }
     }
+
+    public function destroy(Request $request, Tournament $tournament, EntryService $service)
+    {
+        $entry = $service->getEntryForUser($request->user(), $tournament);
+
+        if (!$entry) {
+            return redirect()->route('tournaments.show', $tournament)->with('error', 'エントリー情報が見つかりません');
+        }
+
+        try {
+            $cancelled = $service->cancel($request->user(), $entry);
+
+            $message = $cancelled->isCancelled()
+                ? 'エントリーをキャンセルしました'
+                : 'すでにキャンセルされています';
+
+            return redirect()->route('tournaments.show', $tournament)->with('status', $message);
+        } catch (HttpException $e) {
+            return redirect()->route('tournaments.show', $tournament)->with('error', $e->getMessage());
+        }
+    }
 }

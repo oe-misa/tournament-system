@@ -95,6 +95,38 @@ it('admin can view and update results', function () {
     ]);
 });
 
+it('admin can cancel entries from tournament edit page', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $user = User::factory()->create();
+    $tournament = Tournament::create([
+        'title' => 'T',
+        'description' => null,
+        'event_date' => now()->toDateString(),
+        'entry_deadline' => now()->addDays(5),
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    $entry = Entry::create([
+        'user_id' => $user->id,
+        'tournament_id' => $tournament->id,
+        'status' => Entry::STATUS_ENTRY,
+    ]);
+
+    $this->actingAs($admin)
+        ->get("/admin/tournaments/{$tournament->id}/edit")
+        ->assertOk()
+        ->assertSee('エントリー一覧');
+
+    $this->actingAs($admin)
+        ->delete("/admin/tournaments/{$tournament->id}/entries/{$entry->id}")
+        ->assertRedirect()
+        ->assertSessionHas('status', 'エントリーをキャンセルしました');
+
+    $entry->refresh();
+    expect($entry->status)->toBe(Entry::STATUS_CANCELLED);
+});
+
 it('skips empty results rows on update', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create();

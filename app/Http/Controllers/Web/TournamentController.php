@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Services\EntryService;
 use App\Models\Tournament;
+use Illuminate\Http\Request;
 
 class TournamentController extends Controller
 {
@@ -16,8 +18,12 @@ class TournamentController extends Controller
         return view('tournaments.index', compact('tournaments'));
     }
 
-    public function show(Tournament $tournament)
+    public function show(Request $request, Tournament $tournament, EntryService $entryService)
     {
-        return view('tournaments.show', compact('tournament'));
+        $entry = $entryService->getEntryForUser($request->user(), $tournament);
+        $cancelable = $entry ? $entryService->canCancel($request->user(), $entry) : false;
+        $cancelMessage = $entry ? $entryService->cancelMessage($request->user(), $entry) : null;
+
+        return view('tournaments.show', compact('tournament', 'entry', 'cancelable', 'cancelMessage'));
     }
 }

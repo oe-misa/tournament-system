@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tournaments/{tournament}', [TournamentController::class, 'show']);
 
     Route::post('/tournaments/{tournament}/entries', [EntryController::class, 'store']);
+    Route::delete('/tournaments/{tournament}/entries', [EntryController::class, 'destroy']);
 
     Route::get('/results', [ResultController::class, 'index']);
 

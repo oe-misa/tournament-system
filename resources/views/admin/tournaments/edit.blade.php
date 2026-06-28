@@ -83,6 +83,60 @@
                     </div>
                 </form>
 
+                <div class="border-t border-[#e6ded2] pt-6 space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-[#2f2a25]">エントリー一覧</h3>
+                        <p class="hub-muted text-sm mt-1">管理者は締切日までは各エントリーをキャンセルできます。</p>
+                    </div>
+
+                    @if ($entries->isEmpty())
+                        <div class="rounded-md border border-[#e6ded2] bg-[#faf7f1] p-4 hub-muted">エントリーはありません。</div>
+                    @else
+                        <div class="overflow-x-auto">
+                            <table class="hub-table">
+                                <thead>
+                                    <tr>
+                                        <th>参加者</th>
+                                        <th>状態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($entries as $entry)
+                                        <tr>
+                                            <td>
+                                                <div class="font-semibold">{{ $entry->user->name }}</div>
+                                                <div class="hub-muted">{{ $entry->user->email }}</div>
+                                            </td>
+                                            <td>
+                                                @if ($entry->status === \App\Models\Entry::STATUS_ENTRY)
+                                                    <span class="heian-pill">エントリー済み</span>
+                                                @else
+                                                    <span class="heian-pill">キャンセル済み</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($entry->status === \App\Models\Entry::STATUS_ENTRY)
+                                                    <form method="POST" action="{{ route('admin.tournaments.entries.destroy', [$tournament, $entry]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="heian-btn-danger"
+                                                            onclick="return confirm('このエントリーをキャンセルしますか？')">
+                                                            キャンセル
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="hub-muted">処理済み</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+
             </div>
         </div>
     </div>

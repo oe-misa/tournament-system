@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Entry;
 use App\Models\Tournament;
+use App\Services\EntryService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AdminTournamentController extends Controller
 {
@@ -40,7 +43,13 @@ class AdminTournamentController extends Controller
 
     public function edit(Tournament $tournament)
     {
-        return view('admin.tournaments.edit', compact('tournament'));
+        $entries = Entry::query()
+            ->with('user:id,name,email')
+            ->where('tournament_id', $tournament->id)
+            ->orderBy('id')
+            ->get();
+
+        return view('admin.tournaments.edit', compact('tournament', 'entries'));
     }
 
     public function update(Request $request, Tournament $tournament)
@@ -68,5 +77,19 @@ class AdminTournamentController extends Controller
     public function show(Tournament $tournament)
     {
         return redirect()->route('admin.tournaments.edit', $tournament);
+    }
+
+    public function cancelEntry(Request $request, Tournament $tournament, Entry $entry, EntryService $service)
+    {
+        if ($entry->tournament_id !== $tournament->id) {
+            abort(404);
+        }
+
+        try {
+            $service->cancel($request->user(), $entry);
+            return back()->with('status', 'エントリーをキャンセルしました');
+        } catch (HttpException $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

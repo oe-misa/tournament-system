@@ -30,6 +30,7 @@
 | 会員 | プロフィール | `/profile` | 氏名、メール、パスワード、退会 |
 | 会員 | 大会一覧 | `/tournaments` | 大会一覧 |
 | 会員 | 大会詳細 | `/tournaments/{tournament}` | 大会詳細、エントリー |
+| 会員 | エントリーキャンセル | `/tournaments/{tournament}/entry` | 自分のエントリーキャンセル |
 | 会員 | 成績一覧 | `/results` | 自分の成績一覧 |
 | 会員 | 年間登録 | `/membership/renew` | 年度単位の更新画面 |
 | 会員 | 段位申請 | `/rank-requests` | 段位申請フォーム |
@@ -61,6 +62,7 @@
 - `GET /tournaments`
 - `GET /tournaments/{tournament}`
 - `POST /tournaments/{tournament}/entry`
+- `DELETE /tournaments/{tournament}/entry`
 - `GET /results`
 - `GET /membership/renew`
 - `POST /membership/renew`
@@ -79,6 +81,7 @@
 - `GET /admin/rank-requests`
 - `POST /admin/rank-requests/{rankRequest}/approve`
 - `POST /admin/rank-requests/{rankRequest}/reject`
+- `DELETE /admin/tournaments/{tournament}/entries/{entry}`
 - `GET /admin/tournaments/{tournament}/results`
 - `POST /admin/tournaments/{tournament}/results`
 
@@ -92,6 +95,7 @@
 | GET | `/api/tournaments` | 大会一覧 | pagination 付き大会一覧 |
 | GET | `/api/tournaments/{tournament}` | 大会詳細 | 大会 1 件の JSON |
 | POST | `/api/tournaments/{tournament}/entries` | 大会エントリー | message, entry |
+| DELETE | `/api/tournaments/{tournament}/entries` | 大会エントリーキャンセル | message, entry |
 | GET | `/api/results` | 自分の成績一覧 | pagination 付き成績一覧 |
 | POST | `/api/rank-requests` | 段位申請 | message, rank_request |
 
@@ -131,6 +135,15 @@
 3. `EntryService` が年間登録、段位、締切、定員、重複を検証する。
 4. 問題なければ `entries` に登録する。
 5. 既存エントリーがある場合は成功扱いで既存データを返す。
+6. Web はリダイレクト、API は JSON を返す。
+
+### 大会エントリーキャンセル
+
+1. 会員または管理者がキャンセル操作を行う。
+2. `EntryController` または `AdminTournamentController` が対象エントリーを取得する。
+3. `EntryService` が操作主体、締切、権限を検証する。
+4. 問題なければ `entries.status` を `cancelled` に更新する。
+5. キャンセル済みのエントリーは再エントリーで `entry` に戻せる。
 6. Web はリダイレクト、API は JSON を返す。
 
 ### 年間登録
@@ -202,6 +215,7 @@
 | プロフィール | `users`, `ranks` | `users` |
 | 年間登録 | `users`, `memberships` | `memberships`, `users.membership_expires_at` |
 | 大会一覧 / 詳細 | `tournaments`, `entries` | `entries` |
+| エントリーキャンセル | `entries`, `tournaments` | `entries` |
 | 成績一覧 | `results`, `tournaments` | なし |
 | 段位申請 | `ranks`, `rank_requests`, `users.rank` | `rank_requests` |
 | 段位申請履歴 | `rank_requests`, `ranks`, `users` | なし |

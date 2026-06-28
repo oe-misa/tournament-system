@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 会員：エントリー
     Route::post('/tournaments/{tournament}/entry', [EntryController::class, 'store'])->name('entries.store');
+    Route::delete('/tournaments/{tournament}/entry', [EntryController::class, 'destroy'])->name('entries.destroy');
 
     // 会員：成績
     Route::get('/results', [ResultController::class, 'index'])->name('results.index');
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // 大会 CRUD
     Route::resource('tournaments', AdminTournamentController::class);
+    Route::delete('tournaments/{tournament}/entries/{entry}', [AdminTournamentController::class, 'cancelEntry'])->name('tournaments.entries.destroy');
 
     // 段位申請 管理（履歴含む）
     Route::get('rank-requests', [AdminRankRequestController::class, 'index'])->name('rank_requests.index');

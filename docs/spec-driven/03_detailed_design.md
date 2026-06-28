@@ -32,6 +32,7 @@
   - 大会を開催日順に取得し、ページングする。
 - `show`
   - Route Model Binding で取得した大会を表示する。
+  - ログインユーザーのエントリー状態とキャンセル可否を併せて渡す。
 
 ### Web\EntryController
 
@@ -40,6 +41,11 @@
   - `HttpException` は画面向けのエラーメッセージとして扱う。
   - 成功時は大会詳細へ戻す。
   - 失敗時は大会詳細へ戻し、`error` フラッシュを付ける。
+- `destroy`
+  - `EntryService::getEntryForUser()` で対象エントリーを取得する。
+  - `EntryService::cancel()` を呼ぶ。
+  - 成功時は大会詳細へ戻し、`status` フラッシュを付ける。
+  - エントリーがない場合は `error` フラッシュを付ける。
 
 ### Web\ResultController
 
@@ -111,6 +117,10 @@
   - 成功時は編集画面へ遷移する。
 - `destroy`
   - 大会を削除し、一覧へ戻す。
+- `cancelEntry`
+  - 大会編集画面からエントリーをキャンセルする。
+  - `tournament_id` の不一致は 404 とする。
+  - `EntryService::cancel()` を呼ぶ。
 
 ### Admin\AdminResultController
 
@@ -146,6 +156,11 @@
   - `EntryService::entry()` を呼ぶ。
   - 成功時は `201` と `message`, `entry` を返す。
   - `HttpException` は JSON `message` と HTTP status へ変換する。
+- `EntryController::destroy()`
+  - `EntryService::getEntryForUser()` で対象エントリーを取得する。
+  - `EntryService::cancel()` を呼ぶ。
+  - 成功時は `message`, `entry` を返す。
+  - エントリーがない場合は 404 を返す。
 - `ResultController::index()`
   - ログインユーザーの成績一覧をページングして返す。
 - `RankRequestController::store()`
@@ -161,13 +176,23 @@
   - 年間登録期限を確認する。
   - ユーザー段位と大会最低段位を比較する。
   - エントリー締切を確認する。
+  - トランザクション内で既存行をロックする。
   - トランザクション内で定員と重複を確認する。
-  - 既存エントリーがある場合はそのまま返す。
+  - 既存エントリーが `entry` ならそのまま返す。
+  - 既存エントリーが `cancelled` なら `entry` に戻す。
   - 登録可能なら `Entry` を作成する。
-- `cancel(User $user, Tournament $tournament): void`
-  - 指定会員・指定大会のエントリーを `cancelled` に更新する。
-  - 現行ではルート接続していないが、サービスとして実装済み。
-  - ルート未接続のため、将来のキャンセル導線用の内部 API として扱う。
+- `getEntryForUser(User $user, Tournament $tournament): ?Entry`
+  - 指定会員・指定大会のエントリーを返す。
+- `canCancel(User $actor, Entry $entry): bool`
+  - キャンセル可否を返す。
+- `cancelMessage(User $actor, Entry $entry): ?string`
+  - キャンセル不可理由を返す。
+- `cancel(User $actor, Entry $entry): Entry`
+  - 同一エントリーを transaction でロックする。
+  - 会員は締切 10 日前まで、管理者は締切までキャンセルできる。
+  - 権限不一致や期限超過なら `HttpException` を投げる。
+  - `entries.status` を `cancelled` に更新する。
+  - 既にキャンセル済みならそのまま返す。
 
 ### MembershipService
 
@@ -230,7 +255,8 @@
 
 - 会員の大会エントリー。
 - `user`, `tournament` に属する。
-- `status` は `entry` / `cancelled` を想定するが、現行運用では `entry` が中心。
+- `status` は `entry` / `cancelled` を持つ。
+- `entry` は有効エントリー、`cancelled` はキャンセル済みを意味する。
 - `user_id + tournament_id` の一意制約で重複を防ぐ。
 
 ### Result
