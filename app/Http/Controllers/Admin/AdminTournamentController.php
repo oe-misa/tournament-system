@@ -30,11 +30,19 @@ class AdminTournamentController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', 'in:' . implode(',', [
+                Tournament::STATUS_DRAFT,
+                Tournament::STATUS_RECRUITING,
+                Tournament::STATUS_CLOSED,
+                Tournament::STATUS_FINISHED,
+            ])],
             'event_date' => ['required', 'date'],
             'entry_deadline' => ['nullable', 'date'],
             'capacity' => ['nullable', 'integer', 'min:1'],
             'min_rank_level' => ['required', 'integer', 'min:0', 'max:10'],
         ]);
+
+        $data['status'] = $data['status'] ?? Tournament::STATUS_RECRUITING;
 
         $tournament = Tournament::create($data);
 
@@ -57,6 +65,12 @@ class AdminTournamentController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'status' => ['required', 'string', 'in:' . implode(',', [
+                Tournament::STATUS_DRAFT,
+                Tournament::STATUS_RECRUITING,
+                Tournament::STATUS_CLOSED,
+                Tournament::STATUS_FINISHED,
+            ])],
             'event_date' => ['required', 'date'],
             'entry_deadline' => ['nullable', 'date'],
             'capacity' => ['nullable', 'integer', 'min:1'],

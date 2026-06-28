@@ -37,6 +37,9 @@
 | 会員 | 段位申請履歴 | `/rank-requests/history` | 自分の申請履歴 |
 | 会員 | 段位定義プレビュー | `/rank-definitions/{rank}` | 段位ラベル確認用 JSON |
 | 管理 | 管理ダッシュボード | `/admin` | 管理メニュー、未処理件数 |
+| 管理 | 会員管理 | `/admin/users` | 会員一覧、詳細、編集 |
+| 管理 | 会員詳細 | `/admin/users/{user}` | 会員詳細表示 |
+| 管理 | 会員編集 | `/admin/users/{user}/edit` | 会員情報編集 |
 | 管理 | 大会管理 | `/admin/tournaments` | 大会 CRUD |
 | 管理 | 大会作成 | `/admin/tournaments/create` | 大会作成 |
 | 管理 | 大会編集 | `/admin/tournaments/{tournament}/edit` | 大会編集 |
@@ -78,6 +81,7 @@
 
 - `GET /admin`
 - `Route::resource('/admin/tournaments')`
+- `Route::resource('/admin/users')`
 - `GET /admin/rank-requests`
 - `POST /admin/rank-requests/{rankRequest}/approve`
 - `POST /admin/rank-requests/{rankRequest}/reject`
@@ -119,7 +123,7 @@
 | --- | --- |
 | `users` | `rank_id`, `membership_expires_at`, `is_admin` |
 | `ranks` | `kyu + dan` 一意、`level` index |
-| `tournaments` | `event_date`, `entry_deadline`, `min_rank_level` index |
+| `tournaments` | `status`, `event_date`, `entry_deadline`, `min_rank_level` index |
 | `entries` | `user_id + tournament_id` 一意、`tournament_id + status` index |
 | `results` | `user_id + tournament_id` 一意 |
 | `memberships` | `user_id + end_date` index |
@@ -168,6 +172,13 @@
 2. `AdminTournamentController` が `Tournament` を開催日降順で一覧化する。
 3. 新規作成、編集、削除はそれぞれ `store` / `update` / `destroy` で処理する。
 4. `show` は独立した表示ページを持たず、編集画面へリダイレクトする。
+
+### 会員管理
+
+1. 管理者が会員管理画面を開く。
+2. `AdminUserController` が会員を検索・ページングして一覧する。
+3. 会員詳細では段位、年間登録期限、管理者権限、関連履歴を表示する。
+4. 会員編集では氏名、メールアドレス、段位、年間登録期限、管理者権限を更新する。
 
 ### 管理者成績入力
 
@@ -219,7 +230,8 @@
 | 成績一覧 | `results`, `tournaments` | なし |
 | 段位申請 | `ranks`, `rank_requests`, `users.rank` | `rank_requests` |
 | 段位申請履歴 | `rank_requests`, `ranks`, `users` | なし |
-| 管理ダッシュボード | `rank_requests`, `entries`, `results` | なし |
+| 管理ダッシュボード | `rank_requests`, `entries`, `results`, `tournaments`, `users` | なし |
+| 会員管理 | `users`, `ranks`, `rank_requests`, `entries`, `results`, `memberships` | `users` |
 | 大会管理 | `tournaments` | `tournaments` |
 | 成績入力 | `entries`, `results`, `tournaments` | `results` |
 
@@ -234,7 +246,7 @@
 - 成績一覧: 自分の成績閲覧。
 - 段位申請: 段位申請作成。
 - 段位申請履歴: 申請履歴閲覧。
-- 管理ダッシュボード: 未処理件数の確認と管理導線。
+- 管理ダッシュボード: 未処理件数、下書き大会件数、会員総数の確認と管理導線。
 - 大会管理: 大会 CRUD。
 - 成績入力: 大会別成績の更新。
 - 段位申請管理: 承認・却下。

@@ -18,6 +18,7 @@
                     <thead>
                         <tr>
                             <th>大会</th>
+                            <th>状態</th>
                             <th>開催日</th>
                             <th>参加条件</th>
                             <th>操作</th>
@@ -27,6 +28,7 @@
                         @foreach ($tournaments as $t)
                             <tr>
                                 <td class="font-semibold">{{ $t->title }}</td>
+                                <td><span class="heian-pill">{{ $t->statusLabel() }}</span></td>
                                 <td>{{ $t->event_date->format('Y-m-d') }}</td>
                                 <td>{{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}</td>
                                 <td class="space-x-3">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Entry;
 use App\Models\RankRequest;
+use App\Models\Tournament;
+use App\Models\User;
 
 class AdminDashboardController extends Controller
 {
@@ -23,9 +25,16 @@ class AdminDashboardController extends Controller
             ->whereNull('results.id')
             ->count();
 
+        $memberCount = User::query()->count();
+        $draftTournamentCount = Tournament::query()
+            ->where('status', Tournament::STATUS_DRAFT)
+            ->count();
+
         return view('admin.dashboard', [
             'pendingRankRequestsCount' => $pendingRankRequestsCount,
             'missingResultsCount' => $missingResultsCount,
+            'memberCount' => $memberCount,
+            'draftTournamentCount' => $draftTournamentCount,
         ]);
     }
 }

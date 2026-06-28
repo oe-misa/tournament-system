@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Entry;
+use App\Models\Rank;
 use App\Models\RankRequest;
 use App\Models\Result;
 use App\Models\Tournament;
@@ -21,6 +22,7 @@ it('admin can manage tournaments', function () {
         ->post('/admin/tournaments', [
             'title' => 'Test',
             'description' => 'Desc',
+            'status' => 'recruiting',
             'event_date' => now()->toDateString(),
             'entry_deadline' => null,
             'capacity' => 10,
@@ -42,6 +44,7 @@ it('admin can manage tournaments', function () {
         ->put("/admin/tournaments/{$tournament->id}", [
             'title' => 'Updated',
             'description' => 'Desc',
+            'status' => 'closed',
             'event_date' => now()->toDateString(),
             'entry_deadline' => null,
             'capacity' => 20,
@@ -60,6 +63,7 @@ it('admin can view and update results', function () {
     $tournament = Tournament::create([
         'title' => 'T',
         'description' => null,
+        'status' => 'recruiting',
         'event_date' => now()->toDateString(),
         'entry_deadline' => null,
         'capacity' => null,
@@ -101,6 +105,7 @@ it('admin can cancel entries from tournament edit page', function () {
     $tournament = Tournament::create([
         'title' => 'T',
         'description' => null,
+        'status' => 'recruiting',
         'event_date' => now()->toDateString(),
         'entry_deadline' => now()->addDays(5),
         'capacity' => null,
@@ -133,6 +138,7 @@ it('skips empty results rows on update', function () {
     $tournament = Tournament::create([
         'title' => 'T',
         'description' => null,
+        'status' => 'recruiting',
         'event_date' => now()->toDateString(),
         'entry_deadline' => null,
         'capacity' => null,
@@ -217,4 +223,43 @@ it('admin sees processed message for non-pending rank requests', function () {
         ->post("/admin/rank-requests/{$request->id}/reject")
         ->assertRedirect()
         ->assertSessionHas('status', 'この申請は既に処理済みです');
+});
+
+it('admin can manage users', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $rank = createRank(2);
+    $user = User::factory()->create([
+        'rank_id' => $rank->id,
+        'membership_expires_at' => now()->addYear(),
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/users')
+        ->assertOk()
+        ->assertSee($user->email);
+
+    $this->actingAs($admin)
+        ->get("/admin/users/{$user->id}")
+        ->assertOk()
+        ->assertSee($user->name);
+
+    $newRank = createRank(3);
+    $this->actingAs($admin)
+        ->get("/admin/users/{$user->id}/edit")
+        ->assertOk();
+
+    $this->actingAs($admin)
+        ->put("/admin/users/{$user->id}", [
+            'name' => 'Updated User',
+            'email' => 'updated@example.com',
+            'rank_id' => $newRank->id,
+            'membership_expires_at' => now()->addMonths(2)->format('Y-m-d'),
+            'is_admin' => true,
+        ])
+        ->assertRedirect();
+
+    $user->refresh();
+    expect($user->name)->toBe('Updated User');
+    expect($user->rank_id)->toBe($newRank->id);
+    expect($user->is_admin)->toBeTrue();
 });

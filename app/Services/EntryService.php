@@ -57,6 +57,10 @@ class EntryService
             throw new HttpException(403, '参加条件（段位）を満たしていません');
         }
 
+        if ($tournament->status !== Tournament::STATUS_RECRUITING) {
+            throw new HttpException(403, '現在この大会はエントリー受付中ではありません');
+        }
+
         // 3) 締切チェック（設定されている場合）
         if ($tournament->entry_deadline && now()->greaterThan($tournament->entry_deadline)) {
             throw new HttpException(403, 'エントリー締切を過ぎています');

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminTournamentController;
 use App\Http\Controllers\Admin\AdminRankRequestController;
 use App\Http\Controllers\Admin\AdminResultController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 Route::get('/', function () {
     return view('site.landing');
@@ -70,6 +71,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // 大会 CRUD
     Route::resource('tournaments', AdminTournamentController::class);
     Route::delete('tournaments/{tournament}/entries/{entry}', [AdminTournamentController::class, 'cancelEntry'])->name('tournaments.entries.destroy');
+
+    // 会員管理
+    Route::resource('users', AdminUserController::class)->only(['index', 'show', 'edit', 'update']);
 
     // 段位申請 管理（履歴含む）
     Route::get('rank-requests', [AdminRankRequestController::class, 'index'])->name('rank_requests.index');

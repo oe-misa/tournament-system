@@ -11,6 +11,9 @@
             <div>
                 <a href="{{ route('tournaments.index') }}" class="heian-link text-sm">大会一覧へ戻る</a>
                 <h1 class="hub-title mt-3">{{ $tournament->title }}</h1>
+                <div class="mt-2">
+                    <span class="heian-pill">{{ $tournament->statusLabel() }}</span>
+                </div>
             </div>
 
             @if ($tournament->description)
@@ -66,13 +69,15 @@
             @endif
         </div>
 
-            @if (!$entry || $entry->status === \App\Models\Entry::STATUS_CANCELLED)
+            @if ($tournament->status === \App\Models\Tournament::STATUS_RECRUITING && (!$entry || $entry->status === \App\Models\Entry::STATUS_CANCELLED))
                 <form method="POST" action="{{ route('entries.store', $tournament) }}">
                     @csrf
                     <button class="heian-btn w-full sm:w-auto">
                         {{ $entry ? '再エントリーする' : 'エントリーする' }}
                     </button>
                 </form>
+            @elseif ($tournament->status !== \App\Models\Tournament::STATUS_RECRUITING)
+                <div class="hub-muted text-sm">現在この大会はエントリー受付中ではありません。</div>
             @endif
         </div>
     </div>

@@ -105,7 +105,7 @@
                     </div>
                     <a href="{{ route('admin.dashboard') }}" class="heian-btn-secondary">管理画面へ</a>
                 </div>
-                <div class="grid gap-4 md:grid-cols-2">
+                <div class="grid gap-4 md:grid-cols-3">
                     <a href="{{ route('admin.rank_requests.index') }}" class="hub-menu-card">
                         <div class="flex items-center justify-between gap-3">
                             <span class="font-semibold">段位申請管理</span>
@@ -121,6 +121,11 @@
                                 <span class="heian-pill">成績未入力 {{ $missingResultsCount }}</span>
                             @endif
                         </div>
+                    </a>
+
+                    <a href="{{ route('admin.users.index') }}" class="hub-menu-card">
+                        <div class="font-semibold">会員管理</div>
+                        <div class="hub-muted mt-2 text-sm">会員の段位、期限、権限を確認します。</div>
                     </a>
                 </div>
             </div>

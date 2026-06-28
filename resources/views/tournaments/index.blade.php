@@ -16,7 +16,10 @@
                                 <h2 class="text-lg font-semibold">{{ $t->title }}</h2>
                                 <div class="hub-muted mt-2 text-sm">日程: {{ $t->event_date->format('Y-m-d') }}</div>
                             </div>
-                            <span class="heian-pill">{{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}</span>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="heian-pill">{{ $t->statusLabel() }}</span>
+                                <span class="heian-pill">{{ \App\Support\RankLabel::eligibleKyus($t->min_rank_level) }}</span>
+                            </div>
                         </div>
                         @if ($t->description)
                             <p class="hub-muted mt-3 text-sm">{{ \Illuminate\Support\Str::limit($t->description, 140) }}</p>

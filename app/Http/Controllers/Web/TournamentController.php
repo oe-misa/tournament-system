@@ -12,6 +12,7 @@ class TournamentController extends Controller
     public function index()
     {
         $tournaments = Tournament::query()
+            ->where('status', '!=', Tournament::STATUS_DRAFT)
             ->orderBy('event_date')
             ->paginate(20);
 
@@ -20,6 +21,10 @@ class TournamentController extends Controller
 
     public function show(Request $request, Tournament $tournament, EntryService $entryService)
     {
+        if ($tournament->status === Tournament::STATUS_DRAFT && !$request->user()->is_admin) {
+            abort(404);
+        }
+
         $entry = $entryService->getEntryForUser($request->user(), $tournament);
         $cancelable = $entry ? $entryService->canCancel($request->user(), $entry) : false;
         $cancelMessage = $entry ? $entryService->cancelMessage($request->user(), $entry) : null;

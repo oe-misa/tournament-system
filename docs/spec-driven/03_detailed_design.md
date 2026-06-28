@@ -29,9 +29,10 @@
 ### Web\TournamentController
 
 - `index`
-  - 大会を開催日順に取得し、ページングする。
+  - `draft` を除外して大会を開催日順に取得し、ページングする。
 - `show`
   - Route Model Binding で取得した大会を表示する。
+  - `draft` は管理者以外に 404 を返す。
   - ログインユーザーのエントリー状態とキャンセル可否を併せて渡す。
 
 ### Web\EntryController
@@ -93,6 +94,7 @@
 
 - `index`
   - `pending` 段位申請数と、`entry` 状態で結果未入力の件数を集計する。
+  - 下書き大会数と会員総数を集計する。
   - `admin.dashboard` view を返す。
 
 ### Admin\AdminTournamentController
@@ -101,6 +103,7 @@
 - 入力項目:
   - `title`
   - `description`
+  - `status`
   - `event_date`
   - `entry_deadline`
   - `capacity`
@@ -121,6 +124,19 @@
   - 大会編集画面からエントリーをキャンセルする。
   - `tournament_id` の不一致は 404 とする。
   - `EntryService::cancel()` を呼ぶ。
+
+### Admin\AdminUserController
+
+- `index`
+  - 会員を検索してページング一覧する。
+  - `q` パラメータで氏名とメールアドレスを検索する。
+- `show`
+  - 会員の基本情報、段位、年間登録期限、関連履歴を表示する。
+- `edit`
+  - 編集対象会員と段位一覧を表示する。
+- `update`
+  - 氏名、メールアドレス、段位、年間登録期限、管理者権限を更新する。
+  - 自身の管理者権限を外す操作は無効化する。
 
 ### Admin\AdminResultController
 
@@ -175,6 +191,7 @@
 - `entry(User $user, Tournament $tournament): Entry`
   - 年間登録期限を確認する。
   - ユーザー段位と大会最低段位を比較する。
+  - 大会公開状態が `recruiting` であることを確認する。
   - エントリー締切を確認する。
   - トランザクション内で既存行をロックする。
   - トランザクション内で定員と重複を確認する。
@@ -237,6 +254,7 @@
 - 認証主体。
 - `rank`, `entries`, `results`, `memberships`, `rankRequests` を持つ。
 - `membership_expires_at` は `date` cast。
+- `is_admin` は boolean cast。
 - `password` は hashed cast。
 
 ### Rank
@@ -248,6 +266,7 @@
 
 - 大会。
 - `entries`, `results` を持つ。
+- `status` は `draft / recruiting / closed / finished` を持つ。
 - `event_date` は `date` cast。
 - `entry_deadline` は `datetime` cast。
 

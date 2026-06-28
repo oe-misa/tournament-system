@@ -10,6 +10,7 @@ it('shows tournaments list and detail', function () {
     $tournament = Tournament::create([
         'title' => 'T',
         'description' => null,
+        'status' => 'recruiting',
         'event_date' => now()->toDateString(),
         'entry_deadline' => null,
         'capacity' => null,
@@ -20,11 +21,34 @@ it('shows tournaments list and detail', function () {
     $this->actingAs($user)->get("/tournaments/{$tournament->id}")->assertOk();
 });
 
+it('hides draft tournaments from members', function () {
+    $user = User::factory()->create();
+    $draft = Tournament::create([
+        'title' => 'Draft Tournament',
+        'description' => null,
+        'status' => 'draft',
+        'event_date' => now()->toDateString(),
+        'entry_deadline' => null,
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    $this->actingAs($user)
+        ->get('/tournaments')
+        ->assertOk()
+        ->assertDontSee('Draft Tournament');
+
+    $this->actingAs($user)
+        ->get("/tournaments/{$draft->id}")
+        ->assertNotFound();
+});
+
 it('shows results list', function () {
     $user = User::factory()->create();
     $tournament = Tournament::create([
         'title' => 'T',
         'description' => null,
+        'status' => 'recruiting',
         'event_date' => now()->toDateString(),
         'entry_deadline' => null,
         'capacity' => null,

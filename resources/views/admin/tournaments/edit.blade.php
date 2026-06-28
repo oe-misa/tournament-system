@@ -36,6 +36,16 @@
                         <textarea name="description" class="mt-1 w-full border-gray-300 rounded" rows="4">{{ old('description', $tournament->description) }}</textarea>
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-medium">公開状態</label>
+                        <select name="status" class="mt-1 w-full border-gray-300 rounded">
+                            <option value="draft" @selected((string) old('status', $tournament->status) === 'draft')>下書き</option>
+                            <option value="recruiting" @selected((string) old('status', $tournament->status) === 'recruiting')>募集中</option>
+                            <option value="closed" @selected((string) old('status', $tournament->status) === 'closed')>締切</option>
+                            <option value="finished" @selected((string) old('status', $tournament->status) === 'finished')>終了</option>
+                        </select>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium">開催日</label>
