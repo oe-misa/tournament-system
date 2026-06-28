@@ -57,6 +57,36 @@ it('admin can manage tournaments', function () {
         ->assertRedirect('/admin/tournaments');
 });
 
+it('admin can filter past tournaments', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+
+    $past = Tournament::create([
+        'title' => 'Past',
+        'description' => null,
+        'status' => Tournament::STATUS_FINISHED,
+        'event_date' => now()->subYear()->toDateString(),
+        'entry_deadline' => null,
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    $upcoming = Tournament::create([
+        'title' => 'Upcoming',
+        'description' => null,
+        'status' => Tournament::STATUS_RECRUITING,
+        'event_date' => now()->addMonth()->toDateString(),
+        'entry_deadline' => null,
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/tournaments?scope=past')
+        ->assertOk()
+        ->assertSee('Past')
+        ->assertDontSee('Upcoming');
+});
+
 it('admin can view and update results', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create();

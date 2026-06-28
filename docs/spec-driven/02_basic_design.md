@@ -170,8 +170,9 @@
 
 1. 管理者が大会一覧を開く。
 2. `AdminTournamentController` が `Tournament` を開催日降順で一覧化する。
-3. 新規作成、編集、削除はそれぞれ `store` / `update` / `destroy` で処理する。
-4. `show` は独立した表示ページを持たず、編集画面へリダイレクトする。
+3. 一覧は `all / upcoming / past / draft / recruiting / closed / finished` で絞り込める。
+4. 新規作成、編集、削除はそれぞれ `store` / `update` / `destroy` で処理する。
+5. `show` は独立した表示ページを持たず、編集画面へリダイレクトする。
 
 ### 会員管理
 

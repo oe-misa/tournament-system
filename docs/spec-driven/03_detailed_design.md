@@ -112,6 +112,7 @@
   - 現行では編集画面へリダイレクトする。
 - `index`
   - 大会を開催日降順でページングして返す。
+  - `scope` パラメータで `all / upcoming / past / draft / recruiting / closed / finished` を切り替える。
 - `store`
   - バリデーション後に `Tournament::create()` する。
   - 成功時は編集画面へ遷移する。

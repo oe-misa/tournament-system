@@ -8,6 +8,16 @@
             <a href="{{ route('admin.tournaments.create') }}" class="heian-btn">新規作成</a>
         </div>
 
+        <div class="flex flex-wrap gap-2">
+            <a class="heian-pill {{ ($scope ?? 'all') === 'all' ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index') }}">すべて</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === 'upcoming' ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => 'upcoming']) }}">開催前/募集中</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === 'past' ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => 'past']) }}">過去大会</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === \App\Models\Tournament::STATUS_DRAFT ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => \App\Models\Tournament::STATUS_DRAFT]) }}">下書き</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === \App\Models\Tournament::STATUS_RECRUITING ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => \App\Models\Tournament::STATUS_RECRUITING]) }}">募集中</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === \App\Models\Tournament::STATUS_CLOSED ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => \App\Models\Tournament::STATUS_CLOSED]) }}">締切</a>
+            <a class="heian-pill {{ ($scope ?? 'all') === \App\Models\Tournament::STATUS_FINISHED ? 'ring-2 ring-[#9f3b30]' : '' }}" href="{{ route('admin.tournaments.index', ['scope' => \App\Models\Tournament::STATUS_FINISHED]) }}">終了</a>
+        </div>
+
         @if (session('status'))
             <div class="hub-alert">{{ session('status') }}</div>
         @endif

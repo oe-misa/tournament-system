@@ -11,13 +11,37 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AdminTournamentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tournaments = Tournament::query()
-            ->orderByDesc('event_date')
-            ->paginate(20);
+        $scope = $request->string('scope')->toString() ?: 'all';
 
-        return view('admin.tournaments.index', compact('tournaments'));
+        $query = Tournament::query();
+
+        if ($scope === 'past') {
+            $query->where(function ($q) {
+                $q->where('status', Tournament::STATUS_FINISHED)
+                    ->orWhere('event_date', '<', today());
+            });
+        } elseif ($scope === 'upcoming') {
+            $query->where(function ($q) {
+                $q->where('status', Tournament::STATUS_RECRUITING)
+                    ->orWhere('event_date', '>=', today());
+            });
+        } elseif (in_array($scope, [
+            Tournament::STATUS_DRAFT,
+            Tournament::STATUS_RECRUITING,
+            Tournament::STATUS_CLOSED,
+            Tournament::STATUS_FINISHED,
+        ], true)) {
+            $query->where('status', $scope);
+        }
+
+        $tournaments = $query
+            ->orderByDesc('event_date')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.tournaments.index', compact('tournaments', 'scope'));
     }
 
     public function create()
