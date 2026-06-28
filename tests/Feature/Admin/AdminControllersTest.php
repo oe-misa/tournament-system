@@ -87,6 +87,35 @@ it('admin can filter past tournaments', function () {
         ->assertDontSee('Upcoming');
 });
 
+it('admin sees past tournaments first on the default tournament list', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+
+    Tournament::create([
+        'title' => 'Upcoming',
+        'description' => null,
+        'status' => Tournament::STATUS_RECRUITING,
+        'event_date' => now()->addMonth()->toDateString(),
+        'entry_deadline' => null,
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    Tournament::create([
+        'title' => 'Past',
+        'description' => null,
+        'status' => Tournament::STATUS_FINISHED,
+        'event_date' => now()->subMonth()->toDateString(),
+        'entry_deadline' => null,
+        'capacity' => null,
+        'min_rank_level' => 0,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/tournaments')
+        ->assertOk()
+        ->assertSeeInOrder(['Past', 'Upcoming']);
+});
+
 it('admin can view and update results', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create();

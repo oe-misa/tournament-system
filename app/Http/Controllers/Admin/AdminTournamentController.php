@@ -37,7 +37,10 @@ class AdminTournamentController extends Controller
         }
 
         $tournaments = $query
-            ->orderByDesc('event_date')
+            ->orderByRaw(
+                'CASE WHEN status = ? OR event_date < ? THEN 0 ELSE 1 END, event_date DESC',
+                [Tournament::STATUS_FINISHED, today()->toDateString()]
+            )
             ->paginate(20)
             ->withQueryString();
 
