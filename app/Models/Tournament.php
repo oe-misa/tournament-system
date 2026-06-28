@@ -43,17 +43,17 @@ class Tournament extends Model
 
     public function statusLabel(): string
     {
-        return match ($this->status) {
+        return match ($this->status ?? self::STATUS_RECRUITING) {
             self::STATUS_DRAFT => '下書き',
             self::STATUS_RECRUITING => '募集中',
             self::STATUS_CLOSED => '締切',
             self::STATUS_FINISHED => '終了',
-            default => (string) $this->status,
+            default => (string) ($this->status ?? self::STATUS_RECRUITING),
         };
     }
 
     public function isVisible(): bool
     {
-        return $this->status !== self::STATUS_DRAFT;
+        return ($this->status ?? self::STATUS_RECRUITING) !== self::STATUS_DRAFT;
     }
 }

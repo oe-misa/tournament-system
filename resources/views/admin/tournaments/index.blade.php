@@ -35,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($tournaments as $t)
+                        @forelse ($tournaments as $t)
                             <tr>
                                 <td class="font-semibold">{{ $t->title }}</td>
                                 <td><span class="heian-pill">{{ $t->statusLabel() }}</span></td>
@@ -48,7 +48,13 @@
                                         href="{{ route('admin.results.edit', $t) }}">成績入力</a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-8 text-center text-sm text-stone-500">
+                                    表示できる大会がありません。
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

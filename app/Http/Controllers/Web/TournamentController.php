@@ -12,7 +12,10 @@ class TournamentController extends Controller
     public function index()
     {
         $tournaments = Tournament::query()
-            ->where('status', '!=', Tournament::STATUS_DRAFT)
+            ->where(function ($query) {
+                $query->whereNull('status')
+                    ->orWhere('status', '!=', Tournament::STATUS_DRAFT);
+            })
             ->orderBy('event_date')
             ->paginate(20);
 
