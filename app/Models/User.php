@@ -70,6 +70,16 @@ class User extends Authenticatable
         return $this->hasMany(Membership::class);
     }
 
+    public function hasActiveMembership(): bool
+    {
+        return $this->membership_expires_at?->greaterThanOrEqualTo(today()) ?? false;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->account_status !== 'inactive';
+    }
+
     public function rankRequests(): HasMany
     {
         return $this->hasMany(RankRequest::class);

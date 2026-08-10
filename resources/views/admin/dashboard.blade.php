@@ -2,10 +2,11 @@
     <div class="hub-page max-w-6xl space-y-6">
         <div>
             <h1 class="hub-title">管理</h1>
-            <p class="hub-muted mt-1">大会、成績、段位申請を運用します。</p>
+            <p class="hub-muted mt-1">大会、成績、段位申請、年間登録を運用します。</p>
         </div>
 
         <div class="heian-card p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-2 text-sm"><a href="{{ route('admin.memberships.index',['scope'=>'pending_payment']) }}">入金待ち {{ $membershipCounts['pending_payment'] }}</a><a href="{{ route('admin.memberships.index',['scope'=>'payment_confirmed']) }}">承認待ち {{ $membershipCounts['payment_confirmed'] }}</a><a class="text-red-700 font-semibold" href="{{ route('admin.memberships.index',['scope'=>'overdue_payment']) }}">申請7日超過 {{ $overduePaymentCount }}</a><a class="text-red-700 font-semibold" href="{{ route('admin.memberships.index',['scope'=>'overdue_approval']) }}">確認3日超過 {{ $overdueApprovalCount }}</a><span>承認済み {{ $membershipCounts['approved'] }}</span><span>却下 {{ $membershipCounts['rejected'] }}</span><span>有効会員 {{ $activeMemberCount }}</span><span>期限切れ {{ $expiredMemberCount }}</span></div>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <a href="{{ route('admin.rank_requests.index') }}" class="hub-menu-card">
                         <div class="flex items-center justify-between">
@@ -34,6 +35,10 @@
                             <div class="font-semibold">会員管理</div>
                             <span class="heian-pill">会員 {{ $memberCount ?? 0 }}</span>
                         </div>
+                    </a>
+                    <a href="{{ route('admin.memberships.index') }}" class="hub-menu-card">
+                        <div class="font-semibold">年間登録管理</div>
+                        <div class="hub-muted mt-2 text-sm">入金確認と承認を処理します。</div>
                     </a>
                 </div>
 

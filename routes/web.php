@@ -18,6 +18,9 @@ use App\Http\Controllers\Admin\AdminTournamentController;
 use App\Http\Controllers\Admin\AdminRankRequestController;
 use App\Http\Controllers\Admin\AdminResultController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminMembershipController;
+use App\Http\Controllers\Admin\AdminAuditLogController;
+use App\Http\Controllers\Admin\AdminTournamentNotificationController;
 
 Route::get('/', function () {
     return view('site.landing');
@@ -28,7 +31,7 @@ Route::get('/mypage', function () {
 })->name('member.mypage');
 
 // 会員（authのみ）
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // プロフィール
@@ -65,15 +68,31 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // 管理者（auth + admin）
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('audit-logs', [AdminAuditLogController::class, 'index'])->name('audit_logs.index');
 
     // 大会 CRUD
     Route::resource('tournaments', AdminTournamentController::class);
+    Route::get('tournaments/{tournament}/entries.csv', [AdminTournamentController::class, 'entriesCsv'])->name('tournaments.entries.csv');
+    Route::get('tournaments/{tournament}/print', [AdminTournamentController::class, 'printEntries'])->name('tournaments.entries.print');
+    Route::get('tournaments/{tournament}/notifications', [AdminTournamentNotificationController::class, 'index'])->name('tournaments.notifications.index');
+    Route::get('tournaments/{tournament}/notifications/create', [AdminTournamentNotificationController::class, 'create'])->name('tournaments.notifications.create');
+    Route::post('tournaments/{tournament}/notifications/preview', [AdminTournamentNotificationController::class, 'preview'])->name('tournaments.notifications.preview');
+    Route::post('tournaments/{tournament}/notifications', [AdminTournamentNotificationController::class, 'send'])->name('tournaments.notifications.send');
     Route::delete('tournaments/{tournament}/entries/{entry}', [AdminTournamentController::class, 'cancelEntry'])->name('tournaments.entries.destroy');
 
     // 会員管理
     Route::resource('users', AdminUserController::class)->only(['index', 'show', 'edit', 'update']);
+    Route::get('users-export', [AdminUserController::class, 'export'])->name('users.export');
+
+    Route::get('memberships', [AdminMembershipController::class, 'index'])->name('memberships.index');
+    Route::get('memberships/report', [AdminMembershipController::class, 'report'])->name('memberships.report');
+    Route::get('memberships/report.csv', [AdminMembershipController::class, 'export'])->name('memberships.report.csv');
+    Route::get('memberships/report/print', [AdminMembershipController::class, 'print'])->name('memberships.report.print');
+    Route::post('memberships/{membership}/confirm-payment', [AdminMembershipController::class, 'confirmPayment'])->name('memberships.confirm_payment');
+    Route::post('memberships/{membership}/approve', [AdminMembershipController::class, 'approve'])->name('memberships.approve');
+    Route::post('memberships/{membership}/reject', [AdminMembershipController::class, 'reject'])->name('memberships.reject');
 
     // 段位申請 管理（履歴含む）
     Route::get('rank-requests', [AdminRankRequestController::class, 'index'])->name('rank_requests.index');
